@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Esqueleto da Redação — revelador (10 temas)</title>
+<style>
+  :root{
+    --bg:#eef1f4; --card:#fff; --ink:#17263b; --muted:#5c6b79; --line:#dde3ea; --spine:#c6d2dc;
+    --accent:#0e7c86; --gold:#b5820a; --anchor:#1c6db5; --regra:#2e7d5b; --reforco:#6d4c91; --fecho:#c2570c;
+    --shadow:0 6px 22px rgba(20,40,60,.10); --hf:"Cambria","Georgia",serif; --bf:"Calibri","Segoe UI",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){ :root{ --bg:#0f151c; --card:#182430; --ink:#e8eef4; --muted:#9fb0be; --line:#2a3a48; --spine:#31465a; --accent:#37b3a8; --gold:#e6b23e; --anchor:#5aa2e0; --regra:#6bbf92; --reforco:#a98fd0; --fecho:#e0894f; --shadow:0 6px 22px rgba(0,0,0,.35);} }
+  :root[data-theme="light"]{ --bg:#eef1f4; --card:#fff; --ink:#17263b; --muted:#5c6b79; --line:#dde3ea; --spine:#c6d2dc; }
+  :root[data-theme="dark"]{ --bg:#0f151c; --card:#182430; --ink:#e8eef4; --muted:#9fb0be; --line:#2a3a48; --spine:#31465a; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--bf);line-height:1.5;padding:34px 18px 70px;}
+  .wrap{max-width:900px;margin:0 auto;}
+  .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;}
+  h1{font-family:var(--hf);font-size:clamp(26px,4vw,38px);margin:.1em 0 .1em;text-wrap:balance;}
+  .sub{color:var(--muted);font-size:15.5px;max-width:64ch;}
+  .legend{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;margin:16px 0;font-size:13.5px;}
+  .legend .row{margin:6px 0;}
+  .chip{display:inline-block;font-size:11px;font-weight:800;color:#fff;border-radius:5px;padding:1px 7px;margin-right:2px;vertical-align:1px;}
+  .c-anchor{background:var(--anchor);} .c-regra{background:var(--regra);} .c-reforco{background:var(--reforco);} .c-fecho{background:var(--fecho);}
+  .c-num{background:var(--accent);}
+  .bar{display:flex;align-items:center;gap:14px;margin:12px 0 22px;flex-wrap:wrap;}
+  .prog{font-size:13px;color:var(--muted);font-weight:600;} .prog b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  button.revealall{font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 15px;border-radius:8px;box-shadow:var(--shadow);}
+  button.revealall:hover{border-color:var(--gold);}
+  .steps{position:relative;display:flex;flex-direction:column;gap:14px;}
+  .step{position:relative;padding-left:56px;}
+  .step .dot{position:absolute;left:0;top:0;width:42px;height:42px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--hf);font-weight:700;font-size:19px;box-shadow:var(--shadow);z-index:2;}
+  .step::before{content:"";position:absolute;left:20px;top:42px;bottom:-14px;width:2px;background:var(--spine);z-index:1;}
+  .step:last-child::before{display:none;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;}
+  .card.open{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));}
+  .head{width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:14px 18px;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;font-family:var(--bf);color:var(--ink);}
+  .head .disc{grid-column:1;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);}
+  .head .nm{grid-column:1;font-family:var(--hf);font-size:20px;font-weight:700;}
+  .head .hint{grid-column:1;font-size:12.5px;color:var(--muted);}
+  .head .chev{grid-column:2;grid-row:1 / span 3;font-size:15px;color:var(--muted);width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:transform .25s,background .2s;}
+  .card.open .chev{transform:rotate(90deg);background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);border-color:transparent;}
+  .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease;}
+  .card.open .body{grid-template-rows:1fr;}
+  .body > .inner{overflow:hidden;min-height:0;}
+  .pad{padding:6px 16px 16px;border-top:1px solid var(--line);}
+  .sect{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;}
+
+  /* item nível 2 (clique → recheio) */
+  .qa{border:1px solid var(--line);border-radius:10px;margin:7px 0;overflow:hidden;}
+  .qa.open{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));}
+  .item{width:100%;text-align:left;background:none;border:0;cursor:pointer;font-family:var(--bf);color:var(--ink);
+        padding:9px 12px;display:flex;align-items:center;gap:9px;}
+  .item:hover{background:color-mix(in srgb,var(--accent) 6%,transparent);}
+  .tg{display:inline-flex;align-items:center;justify-content:center;font-family:var(--bf);font-weight:800;font-size:10.5px;color:#fff;border-radius:5px;padding:0 7px;height:19px;flex:none;}
+  .tg.num{min-width:19px;padding:0;}
+  .item .lbl{font-size:13.5px;font-weight:600;flex:1;}
+  .item .plus{font-size:12px;color:var(--muted);flex:none;transition:transform .2s;}
+  .qa.open .item .plus{transform:rotate(45deg);color:var(--accent);}
+  .fill{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease;}
+  .qa.open .fill{grid-template-rows:1fr;}
+  .fill > .in{overflow:hidden;min-height:0;}
+  .fill .txt{font-family:var(--hf);font-size:15px;line-height:1.6;padding:2px 13px 12px 40px;color:var(--ink);}
+  .qa.anchors-row .fill .txt{font-family:var(--bf);font-size:13px;color:var(--muted);}
+
+  .final{margin:9px 0 4px;background:color-mix(in srgb,var(--accent) 8%,transparent);border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:10px;padding:11px 14px;}
+  .final .cap{font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);margin-bottom:5px;}
+  .final p{margin:0;font-family:var(--hf);font-size:15px;line-height:1.7;text-align:justify;text-indent:1.6em;}
+
+  .foot{margin-top:26px;color:var(--muted);font-size:12.5px;text-align:center;line-height:1.7;}
+  .warn{color:color-mix(in srgb,var(--gold) 80%,var(--ink));}
+  .toolbar{max-width:900px;margin:0 auto 12px;text-align:right;}
+  .toolbar button{font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+  @media print{ body{background:#fff;padding:0;} .toolbar{display:none;} .card{break-inside:avoid;} .body,.fill{grid-template-rows:1fr!important;} }
+</style>
+</head>
+<body>
+
+<div class="toolbar"><button onclick="window.print()">Imprimir / PDF</button></div>
+<div class="wrap">
+  <div class="eyebrow">2ª Fase · Padrão CEBRASPE</div>
+  <h1>O Esqueleto da Redação</h1>
+  <p class="sub">Abra o tema; dentro dele, <b>clique em cada peça</b> (①–④, ÂNCORA, REGRA, REFORÇO, FECHO) para revelar o recheio daquele instituto. O molde é o mesmo — muda só o instituto.</p>
+
+  <div class="legend">
+    <div class="row"><b>Macro:</b> com quesitos numerados → <b>1 quesito = 1 parágrafo</b> (o enunciado é o esqueleto); tema livre → 5 movimentos.</div>
+    <div class="row"><b>Introdução (fórmula mestra):</b> <span class="chip c-num">①</span> nome+gênero <span class="chip c-num">②</span> sede legal <span class="chip c-num">③</span> função <span class="chip c-num">④</span> princípio.</div>
+    <div class="row"><b>Parágrafo de quesito (4 peças):</b> <span class="chip c-anchor">ÂNCORA</span> palavra do bullet + <span class="chip c-regra">REGRA</span> artigo + <span class="chip c-reforco">REFORÇO</span> jurisprudência/distinção + <span class="chip c-fecho">FECHO</span> consequência.</div>
+  </div>
+
+  <div class="bar"><span class="prog">Temas abertos <b><span id="count">0</span>/10</span><button class="revealall" id="toggleAll">Abrir tudo</button></div>
+  <div class="steps" id="steps"></div>
+
+  <div class="foot">O molde é sempre o mesmo — muda o instituto, a lei e o princípio.<br>
+    <span class="warn">As citações são referência de estudo — confirme lei/artigo/julgado antes da prova.</span></div>
+</div>
+
+<script>
+// intro: [①nome+gênero, ②sede, ③função, ④princípio] · sample: [ÂNCORA, REGRA, REFORÇO, FECHO]
+const T=[
+ {d:"Empresarial", nm:"Recuperação Judicial", hint:"Lei 11.101/2005 · preservação da empresa",
+  intro:["A recuperação judicial,","disciplinada pela Lei n. 11.101/2005, é o instituto que","viabiliza a superação da crise econômico-financeira do devedor empresário, a fim de manter a fonte produtora, o emprego e os interesses dos credores.","Seu núcleo axiológico é o princípio da preservação da empresa (art. 47)."],
+  q:"requisitos do pedido", sample:["Quanto aos requisitos materiais,","nos termos do art. 48 da Lei n. 11.101/2005,","exige-se exercício regular há mais de dois anos, não ser falido e não ter obtido recuperação há menos de cinco anos (a inicial instrui-se pelo art. 51).","Ausente qualquer deles, impõe-se o indeferimento do pedido."],
+  anchors:"requisitos (art. 48) · sociedade em comum · débitos tributários (art. 6º §7º-B) · CND (art. 57) · efeitos: protestos (art. 59)"},
+ {d:"Registral", nm:"Usucapião Extrajudicial", hint:"art. 216-A/Lei 6.015 · função social da posse",
+  intro:["A usucapião extrajudicial,","disciplinada pelos arts. 1.238 e ss. do CC e pelo art. 216-A da Lei 6.015/1973, é o","modo originário de aquisição da propriedade, processado perante o registrador de imóveis.","Seu núcleo axiológico é a função social da posse e da propriedade (art. 5º, XXIII, CF)."],
+  q:"requisitos", sample:["Quanto aos requisitos,","nos termos do art. 1.238 do CC,","demonstra-se posse mansa, pacífica e contínua, com animus domini, pelo prazo legal; na via extrajudicial, o pedido instrui-se com ata notarial, planta e memorial (art. 216-A).","Ausente algum requisito, o registrador recusa por nota fundamentada."],
+  anchors:"requisitos (art. 1.238) · impugnação do confrontante (art. 216-A) · efeitos registrais (matrícula)"},
+ {d:"Notarial", nm:"Ata Notarial", hint:"art. 384 CPC · fé pública notarial",
+  intro:["A ata notarial,","prevista no art. 384 do CPC e nos arts. 6º e 7º da Lei 8.935/1994, é o","instrumento público pelo qual o tabelião documenta a existência e o modo de existir de um fato, conservando prova pré-constituída.","Sustenta-a o princípio da fé pública notarial."],
+  q:"distinção da escritura", sample:["Distingue-se da escritura quanto ao conteúdo:","na forma do art. 384 do CPC,","a ata apenas narra e certifica um fato presenciado, sem juízo de mérito, enquanto a escritura formaliza declarações de vontade com efeitos negociais.","Daí por que a ata dispensa a capacidade negocial das partes."],
+  anchors:"distinção da escritura · valor probatório · fatos documentáveis (mensagens, sites)"},
+ {d:"Registral", nm:"Alienação Fiduciária de Imóvel", hint:"Lei 9.514/1997 · segurança do crédito",
+  intro:["A alienação fiduciária de coisa imóvel,","regida pela Lei 9.514/1997, é o","negócio jurídico de garantia pelo qual o devedor transfere ao credor a propriedade resolúvel do bem, para assegurar o cumprimento da obrigação.","Informa-a o princípio da segurança do crédito e da concentração na matrícula."],
+  q:"constituição da garantia", sample:["Quanto à constituição da garantia,","nos termos da Lei 9.514/1997,","a propriedade fiduciária constitui-se com o registro do contrato na matrícula do imóvel, no registro de imóveis competente.","De modo que, antes do registro, não há garantia real oponível a terceiros."],
+  anchors:"constituição (registro) · mora e purgação · consolidação e leilão"},
+ {d:"Civil", nm:"Bem de Família", hint:"Lei 8.009/1990 · proteção da moradia",
+  intro:["O bem de família,","nas modalidades legal (Lei 8.009/1990) e convencional (arts. 1.711 e ss. do CC), é o","instituto que protege a moradia da entidade familiar contra a penhora.","Seu núcleo axiológico é a dignidade da pessoa humana e a proteção da família."],
+  q:"impenhorabilidade", sample:["Quanto à impenhorabilidade,","nos termos da Lei 8.009/1990,","o imóvel residencial da entidade familiar não responde por dívidas, salvo as exceções do art. 3º; a Súmula 364 do STJ estende a proteção à pessoa solteira, separada ou viúva.","Por isso, penhora que a viole é nula."],
+  anchors:"impenhorabilidade (Lei 8.009/90) · exceções (art. 3º) · pessoa solteira (Súmula 364 STJ)"},
+ {d:"Notarial", nm:"Escritura de Compra e Venda", hint:"art. 108 CC · segurança jurídica e forma",
+  intro:["A escritura pública de compra e venda,","exigida pelo art. 108 do CC e lavrada na forma do art. 215 do CC e da Lei 8.935/1994, é o","instrumento que formaliza a alienação onerosa da propriedade imóvel.","Rege-a o princípio da segurança jurídica e da forma."],
+  q:"forma do ato", sample:["Quanto à forma,","nos termos do art. 108 do CC,","a escritura pública é da substância do ato para imóveis de valor superior a trinta salários mínimos, sob pena de nulidade (art. 166, IV).","De modo que o instrumento particular, nesses casos, não transfere a propriedade."],
+  anchors:"forma (art. 108) · qualificação das partes · requisitos (art. 215) · emolumentos"},
+ {d:"Constitucional", nm:"Mandado de Segurança", hint:"art. 5º LXIX CF · inafastabilidade da jurisdição",
+  intro:["O mandado de segurança,","previsto no art. 5º, LXIX, da CF e na Lei 12.016/2009, é a","ação constitucional que protege direito líquido e certo, não amparado por habeas corpus ou data, contra ilegalidade ou abuso de poder de autoridade.","Seu núcleo é a inafastabilidade da jurisdição."],
+  q:"direito líquido e certo", sample:["Quanto ao direito líquido e certo,","nos termos do art. 1º da Lei 12.016/2009,","exige-se prova pré-constituída dos fatos, sem dilação probatória — a liquidez refere-se aos fatos, não à tese jurídica (Súmula 625 do STF).","Por isso, ausente prova documental, a via é inadequada."],
+  anchors:"direito líquido e certo · autoridade coatora · prazo decadencial 120 dias (art. 23)"},
+ {d:"Administrativo", nm:"Improbidade Administrativa", hint:"art. 37 §4º CF · moralidade administrativa",
+  intro:["A improbidade administrativa,","prevista no art. 37, §4º, da CF e na Lei 8.429/1992 (com a Lei 14.230/2021), é o","ilícito de natureza civil qualificado pela desonestidade do agente público.","Seu núcleo axiológico é a moralidade administrativa."],
+  q:"elemento subjetivo", sample:["Quanto ao elemento subjetivo,","nos termos do art. 1º, §§1º e 2º, da Lei 8.429/1992 (Lei 14.230/2021),","exige-se dolo específico; a modalidade culposa foi revogada, e o STF (Tema 1.199) limitou a retroatividade aos fatos sem condenação definitiva.","De modo que a conduta meramente culposa não configura mais improbidade."],
+  anchors:"natureza (RE 843.989) · elemento subjetivo (dolo) · prescrição (Temas 666/897)"},
+ {d:"Registral / Protesto", nm:"Protesto de Títulos", hint:"Lei 9.492/1997 · publicidade e segurança do crédito",
+  intro:["O protesto,","disciplinado pela Lei 9.492/1997, é o","ato formal e solene pelo qual se prova a inadimplência e o descumprimento de obrigação constante de título ou documento de dívida.","Sustenta-o o princípio da publicidade e da segurança do crédito."],
+  q:"intimação", sample:["Quanto à intimação,","nos termos do art. 14 da Lei 9.492/1997,","o devedor é intimado no endereço fornecido pelo apresentante, para pagar ou providenciar a sustação no prazo legal; frustrada a pessoal, admite-se por edital.","De modo que a ausência de intimação regular vicia o protesto."],
+  anchors:"objeto (títulos e documentos de dívida) · intimação (art. 14) · efeitos · cancelamento (art. 26)"},
+ {d:"Civil / Sucessões", nm:"Testamento", hint:"arts. 1.857 e ss. CC · autonomia da vontade",
+  intro:["O testamento,","regido pelos arts. 1.857 e ss. do CC, é o","negócio jurídico unilateral e revogável pelo qual a pessoa dispõe de bens e faz declarações de última vontade, para depois da morte.","Seu núcleo axiológico é a autonomia da vontade."],
+  q:"formas ordinárias", sample:["Quanto às formas ordinárias,","nos termos dos arts. 1.862 e ss. do CC,","admitem-se o testamento público, o cerrado e o particular, cada qual com requisitos próprios de solenidade.","De modo que o descumprimento da forma acarreta a nulidade da disposição."],
+  anchors:"formas (público/cerrado/particular) · legítima (arts. 1.789/1.846) · capacidade de testar (art. 1.860)"}
+];
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+const NUM=["①","②","③","④"];
+const INTRO_LBL=["Nome + gênero","Sede legal","Função / finalidade","Princípio reitor"];
+const SAMP_LBL=["ÂNCORA — a palavra do bullet","REGRA — o artigo","REFORÇO — jurisprudência / distinção","FECHO — a consequência"];
+const SAMP_TAG=["ÂNCORA","REGRA","REFORÇO","FECHO"];
+const SAMP_CLS=["c-anchor","c-regra","c-reforco","c-fecho"];
+
+function qaRow(tagHTML,label,recheio,extraClass){
+  return `<div class="qa ${extraClass||""}">
+    <button class="item" aria-expanded="false">${tagHTML}<span class="lbl">${label}</span><span class="plus">＋</span></button>
+    <div class="fill"><div class="in"><div class="txt">${recheio}</div></div></div>
+  </div>`;
+}
+
+const steps=document.getElementById("steps");
+T.forEach((o,i)=>{
+  let items="";
+  items+=`<div class="sect">Introdução · fórmula mestra</div>`;
+  o.intro.forEach((t,k)=> items+=qaRow(`<span class="tg num c-num">${NUM[k]}</span>`, INTRO_LBL[k], esc(t)) );
+  items+=`<div class="final"><div class="cap">Introdução — redação montada</div><p>${esc(o.intro.join(" "))}</p></div>`;
+  items+=`<div class="sect">Parágrafo de quesito — “${esc(o.q)}”</div>`;
+  o.sample.forEach((t,k)=> items+=qaRow(`<span class="tg ${SAMP_CLS[k]}">${SAMP_TAG[k]}</span>`, SAMP_LBL[k], esc(t)) );
+  items+=`<div class="final"><div class="cap">1º quesito — redação montada</div><p>${esc(o.sample.join(" "))}</p></div>`;
+  items+=`<div class="sect">Âncoras dos demais quesitos</div>`;
+  items+=qaRow(`<span class="tg c-num" style="background:var(--gold)">≡</span>`, "Os demais bullets que a banca costuma pedir", esc(o.anchors), "anchors-row");
+
+  const art=document.createElement("div"); art.className="step";
+  art.innerHTML=`
+    <span class="dot">${i+1}</span>
+    <div class="card">
+      <button class="head" aria-expanded="false">
+        <span class="disc">${esc(o.d)}</span>
+        <span class="nm">${esc(o.nm)}</span>
+        <span class="hint">${esc(o.hint)}</span>
+        <span class="chev" aria-hidden="true">▸</span>
+      </button>
+      <div class="body"><div class="inner"><div class="pad">${items}</div></div></div>
+    </div>`;
+  steps.appendChild(art);
+});
+
+// nível 2 — cada item revela seu recheio
+document.querySelectorAll(".qa .item").forEach(btn=>{
+  btn.addEventListener("click",()=>{ const qa=btn.closest(".qa"); const o=qa.classList.toggle("open"); btn.setAttribute("aria-expanded",o?"true":"false"); });
+});
+
+// nível 1 — abrir/fechar tema
+const cards=[...document.querySelectorAll(".card")], countEl=document.getElementById("count"), toggleAll=document.getElementById("toggleAll");
+function refresh(){ const n=cards.filter(c=>c.classList.contains("open")).length; countEl.textContent=n; toggleAll.textContent=n===cards.length?"Fechar tudo":"Abrir tudo"; }
+cards.forEach(c=>{ const h=c.querySelector(".head"); h.addEventListener("click",()=>{ const o=c.classList.toggle("open"); h.setAttribute("aria-expanded",o?"true":"false"); refresh(); }); });
+toggleAll.addEventListener("click",()=>{ const open=cards.some(c=>!c.classList.contains("open")); cards.forEach(c=>{c.classList.toggle("open",open);c.querySelector(".head").setAttribute("aria-expanded",open?"true":"false");}); refresh(); });
+refresh();
+</script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  TEMPLATE PADRÃO — Simulado de questões objetivas (modelo Meta 16 Empresarial)
+  ----------------------------------------------------------------------------
+  COMO GERAR UM NOVO SIMULADO:
+   1) Edite o CONFIG mínimo:
+        - <title> e <h1>:  "Meta XX · Disciplina — Parte X"
+        - <footer>:        "Meta XX · Disciplina · <tema do bloco> · Parte X"
+        - STORE_KEY:       "concurso_metaXX_disciplina_parteX_v1"
+                           (chave do localStorage onde este simulado guarda o progresso)
+   2) Preencha o array QUESTOES (15 questões por parte). Um objeto por questão:
+        id:'q1'..'q15' -> POSIÇÃO no simulado (NUNCA o nº da banca)
+        materia,banca  -> proveniência (banca/tribunal/ano PODE aparecer)
+        enunciado      -> HTML, aceita <br> e assertivas I, II, III
+        alternativas   -> [{letra,texto}]
+        correta:'A'    -> LETRA do GABARITO OFICIAL do material (não palpite)
+        comentario     -> HTML com os rótulos padrão
+   3) Salve como:  MetaXX-Disciplina-ParteX.html   (SEM Qxxx no nome)
+
+  A tela mostra "Questão X de N" (posição), nunca o nº da banca.
+  Recursos prontos: timer, stats, revisão espaçada, caderno de erros, modo por
+  tema/aleatório, anotações por questão, exportar/importar progresso (JSON).
+  ============================================================================
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aperitivo 3 · Simulado de Domingo — 10 questões (estilo TJ MT Cartórios)</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#050b18;color:#c9d6e8;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;min-height:100vh}
+a{color:#38bdf8}
+button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;border:none;outline:none;font-family:inherit}
+.banner-save{background:#0d2040;border-bottom:1px solid #16365a;padding:8px 14px;font-size:12px;color:#7aa3cc;text-align:center;position:sticky;top:0;z-index:100}
+.banner-iframe{background:#1a1200;border-bottom:1px solid #4a3200;padding:8px 14px;font-size:12px;color:#d4a84b;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.banner-iframe button{background:none;color:#d4a84b;font-size:16px;line-height:1;padding:0 4px;border:none;cursor:pointer}
+.header{padding:16px 14px 0}
+.header h1{font-size:18px;font-weight:700;color:#e8f0fb;margin-bottom:12px}
+.timer-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#7aa3cc;margin-bottom:12px}
+.timer-bar span.time-val{color:#38bdf8;font-variant-numeric:tabular-nums;font-weight:600}
+.timer-btn{background:#0b1828;border:1px solid #16365a;color:#7aa3cc;padding:3px 10px;border-radius:6px;font-size:12px}
+.timer-btn:hover{border-color:#38bdf8;color:#38bdf8}
+.stats-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.stat-chip{background:#0b1828;border:1px solid #16365a;border-radius:8px;padding:5px 11px;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:1px}
+.stat-chip .sv{font-size:18px;font-weight:700;line-height:1.1}
+.stat-chip .sl{font-size:10px;color:#55738e;text-transform:uppercase;letter-spacing:.5px}
+.sv.green{color:#27c06a}.sv.red{color:#f25555}.sv.amber{color:#f5a623}.sv.cyan{color:#38bdf8}
+.progress-wrap{margin-bottom:14px}
+.progress-bar{height:5px;background:#0b1828;border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#27c06a,#38bdf8);border-radius:3px;transition:width .4s}
+.progress-label{font-size:11px;color:#55738e;margin-top:3px}
+.mode-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.mode-btn{background:#0b1828;border:1px solid #16365a;color:#7aa3cc;padding:5px 12px;border-radius:20px;font-size:12px;transition:all .2s}
+.mode-btn.active{background:#16365a;border-color:#38bdf8;color:#38bdf8;font-weight:600}
+.mode-btn:hover:not(.active){border-color:#38bdf8;color:#c9d6e8}
+.materia-select{background:#0b1828;border:1px solid #16365a;color:#c9d6e8;padding:5px 10px;border-radius:20px;font-size:12px;outline:none}
+.materia-select:focus{border-color:#38bdf8}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.btn-sm{background:#0b1828;border:1px solid #16365a;color:#7aa3cc;padding:5px 12px;border-radius:8px;font-size:12px;transition:all .2s}
+.btn-sm:hover{border-color:#38bdf8;color:#c9d6e8}
+.btn-danger{border-color:#f25555;color:#f25555}
+.btn-danger:hover{background:#2a0808}
+.card{background:#0b1828;border:1px solid #16365a;border-radius:14px;padding:20px;margin:0 0 12px}
+.card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.4px}
+.badge-materia{background:#0d2040;color:#7aa3cc;border:1px solid #16365a}
+.badge-banca{background:#1a0d28;color:#c59bf2;border:1px solid #34204e}
+.review-badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600}
+.review-today{background:#2a1e00;color:#f5a623}
+.review-future{background:#0b1828;color:#55738e;border:1px solid #16365a}
+.enunciado{font-size:15px;line-height:1.6;color:#d8e8f8;margin-bottom:16px}
+.nav-counter{text-align:right;font-size:12px;color:#55738e;margin-bottom:8px}
+.alts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.alt-btn{background:#050b18;border:1.5px solid #16365a;color:#b8cce0;padding:11px 14px;border-radius:10px;text-align:left;font-size:14px;line-height:1.4;transition:all .15s;display:flex;gap:10px;align-items:flex-start;width:100%}
+.alt-btn .alt-letra{font-weight:700;min-width:18px;color:#38bdf8;flex-shrink:0}
+.alt-btn:hover:not(:disabled){border-color:#38bdf8;background:#0b1828}
+.alt-btn.selected{border-color:#b06bf2;background:#1a0d28}
+.alt-btn.correct{border-color:#27c06a!important;background:#0a2018!important;color:#7fffa8!important}
+.alt-btn.wrong{border-color:#f25555!important;background:#200a0a!important;color:#ffaaaa!important}
+.alt-btn.reveal-correct{border-color:#27c06a;background:#0a2018;color:#7fffa8}
+.alt-btn:disabled{cursor:default;opacity:.85}
+.alt-letra.correct{color:#27c06a!important}
+.alt-letra.wrong{color:#f25555!important}
+.alt-letra.reveal-correct{color:#27c06a}
+.btn-confirm{width:100%;padding:12px;border-radius:10px;font-size:15px;font-weight:700;background:#16365a;color:#e8f0fb;border:1.5px solid #2a5a8a;transition:all .2s;margin-bottom:10px}
+.btn-confirm:hover:not(:disabled){background:#1e4a7a;border-color:#38bdf8}
+.btn-confirm:disabled{opacity:.4;cursor:default}
+.result-banner{padding:12px 16px;border-radius:10px;font-size:14px;font-weight:600;margin-bottom:12px}
+.result-banner.correct{background:#0a2018;border:1.5px solid #27c06a;color:#7fffa8}
+.result-banner.wrong{background:#200a0a;border:1.5px solid #f25555;color:#ffaaaa}
+.comment-wrap{margin-bottom:12px}
+.comment-toggle{background:#0d1e32;border:1px solid #16365a;color:#7aa3cc;padding:8px 14px;border-radius:8px;font-size:13px;width:100%;text-align:left;transition:all .2s}
+.comment-toggle:hover{border-color:#38bdf8;color:#c9d6e8}
+.comment-body{background:#040c1c;border:1px solid #16365a;border-top:none;border-radius:0 0 8px 8px;padding:14px;font-size:13px;line-height:1.7;color:#b8cce0;display:none}
+.comment-body.open{display:block}
+.sched-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.sched-label{font-size:11px;color:#55738e;margin-right:2px}
+.sched-btn{padding:5px 11px;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid #4a3200;color:#f5a623;background:#1a1200;transition:all .2s}
+.sched-btn:hover{background:#2a1e00;border-color:#f5a623}
+.sched-btn.remove{border-color:#16365a;color:#55738e;background:#050b18}
+.sched-btn.remove:hover{border-color:#f25555;color:#f25555}
+.star-btn{padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid #16365a;color:#55738e;background:#050b18;transition:all .2s}
+.star-btn.active{border-color:#b06bf2;color:#b06bf2;background:#160d24}
+.star-btn:hover{border-color:#b06bf2;color:#b06bf2}
+.nav-row{display:flex;justify-content:space-between;gap:8px;margin-top:4px}
+.nav-btn{flex:1;padding:10px;border-radius:10px;font-size:14px;font-weight:600;background:#0b1828;border:1.5px solid #16365a;color:#7aa3cc;transition:all .2s;max-width:48%}
+.nav-btn:hover:not(:disabled){border-color:#38bdf8;color:#c9d6e8}
+.nav-btn:disabled{opacity:.35;cursor:default}
+.empty-state{text-align:center;padding:48px 20px;color:#55738e;font-size:14px}
+.empty-state .icon{font-size:40px;margin-bottom:12px}
+.io-row{display:flex;gap:6px;flex-wrap:wrap}
+.btn-io{background:#0b1828;border:1px solid #16365a;color:#7aa3cc;padding:6px 13px;border-radius:8px;font-size:12px;transition:all .2s}
+.btn-io:hover{border-color:#38bdf8;color:#c9d6e8}
+#fileInput{display:none}
+footer{padding:16px 14px 28px;text-align:center;font-size:11px;color:#2a4060}
+@media(max-width:480px){.stats-bar{gap:6px}.stat-chip{padding:4px 8px}.stat-chip .sv{font-size:16px}}
+.notas-wrap{margin-top:14px;border-top:1px dashed #1b3550;padding-top:12px}
+.notas-label{font-size:12px;font-weight:700;color:#fbbf24;margin-bottom:7px}
+.notas-area{width:100%;min-height:70px;resize:vertical;background:#0b1828;border:1px solid #16365a;border-radius:10px;color:#dbe7f5;font-size:13.5px;font-family:inherit;line-height:1.5;padding:10px 12px;outline:none;transition:border .2s}
+.notas-area:focus{border-color:#fbbf24;box-shadow:0 0 0 2px rgba(251,191,36,.18)}
+.notas-area::placeholder{color:#3a5474}
+.claude-qbtn{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;border-radius:6px;padding:3px 9px;font-size:13px;opacity:.45;transition:.15s;-webkit-tap-highlight-color:transparent;}
+.claude-qbtn:hover,.claude-qbtn:active{opacity:1;background:rgba(56,189,248,.2)}
+</style>
+</head>
+<body>
+<div class="banner-save">💾 Seu progresso é salvo automaticamente neste aparelho. Cada pessoa tem o seu.</div>
+<div class="banner-iframe" id="bannerIframe">
+  <span>⚠️ Abra sempre por link direto, não embutido em iframe (Notion/etc.), ou o progresso pode não ser salvo.</span>
+  <button onclick="dismissIframeBanner()" title="Fechar">✕</button>
+</div>
+<div class="header">
+  <h1>Aperitivo 3 · Simulado de Domingo — 10 questões (estilo TJ MT Cartórios)</h1>
+  <div class="timer-bar">
+    <span>⏱ <span class="time-val" id="timerQ">00:00</span></span><span>|</span>
+    <span>Sessão: <span class="time-val" id="timerS">00:00</span></span>
+    <button class="timer-btn" id="btnPause" onclick="togglePause()">Pausar</button>
+  </div>
+  <div class="stats-bar" id="statsBar"></div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-label" id="progressLabel"></div>
+  </div>
+  <div class="mode-bar">
+    <button class="mode-btn" data-modo="todas" onclick="setModo('todas')">Todas</button>
+    <button class="mode-btn" data-modo="hoje" onclick="setModo('hoje')">Revisar hoje</button>
+    <button class="mode-btn" data-modo="caderno" onclick="setModo('caderno')">Caderno de erros</button>
+    <button class="mode-btn" data-modo="materia" onclick="setModo('materia')">Por tema</button>
+    <button class="mode-btn" data-modo="aleatorio" onclick="setModo('aleatorio')">Aleatório</button>
+    <select class="materia-select" id="materiaSelect" style="display:none" onchange="setMateriaFiltro(this.value)">
+      <option value="">— Escolha —</option>
+    </select>
+  </div>
+  <div class="action-row">
+    <div class="io-row">
+      <button class="btn-io" onclick="exportarProgresso()">⬇ Exportar</button>
+      <button class="btn-io" onclick="document.getElementById('fileInput').click()">⬆ Importar</button>
+      <input type="file" id="fileInput" accept=".json" onchange="importarProgresso(event)">
+      <button class="btn-io" onclick="exportarNotas()">📝 Baixar anotações (.txt)</button>
+    </div>
+    <button class="btn-sm btn-danger" onclick="recomecar()">🔄 Recomeçar</button>
+  </div>
+</div>
+<div style="padding:0 14px" id="mainContent"></div>
+<footer>Aperitivo 3 do Simulado de Domingo · 10 questões inéditas no estilo do concurso de Cartórios do TJ MT · domingo, 9h30</footer>
+<script>
+const STORE_KEY = 'concurso_aperitivo3_simulado_domingo_v1';   // chave do localStorage deste simulado
+const SLUG = STORE_KEY.replace(/^concurso_/,'');   // usado nos nomes dos arquivos de exportação
+const QUESTOES = [
+ {
+  "id": "q1",
+  "materia": "Civil · Locação — alienação do imóvel",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Meire aluga há três anos uma loja em contrato escrito por prazo determinado de dez anos. O contrato contém cláusula de vigência em caso de alienação, mas nunca foi averbado na matrícula do imóvel. O imóvel foi vendido a um fundo imobiliário, que registrou a aquisição e, quarenta dias depois, notificou Meire para desocupar. Nos termos da Lei nº 8.245/1991, o adquirente",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "não pode denunciar a locação, pois a simples existência da cláusula de vigência no contrato escrito vincula qualquer adquirente."
+   },
+   {
+    "letra": "B",
+    "texto": "pode denunciar o contrato, concedendo prazo de 90 dias para desocupação, pois a cláusula de vigência não averbada não lhe é oponível — e a denúncia foi exercida no prazo legal de 90 dias do registro."
+   },
+   {
+    "letra": "C",
+    "texto": "pode denunciar o contrato a qualquer tempo durante a locação, pois adquirente não se sujeita a prazo para o exercício da denúncia."
+   },
+   {
+    "letra": "D",
+    "texto": "pode denunciar com prazo de 30 dias para desocupação, aplicável às locações não residenciais."
+   },
+   {
+    "letra": "E",
+    "texto": "não pode denunciar, pois a venda rompe a locação apenas nas locações residenciais."
+   }
+  ],
+  "correta": "B",
+  "comentario": "<b>✅ Gabarito: LETRA B</b><br><br><b>⚖️ Por quê:</b> Art. 8º da Lei 8.245/91: alienado o imóvel na vigência da locação, o adquirente pode denunciar o contrato com <b>prazo de 90 dias para a desocupação</b>, SALVO se a locação for por tempo determinado E o contrato contiver cláusula de vigência E estiver <b>averbado na matrícula</b>. Sem averbação, a cláusula não vincula o adquirente. O §2º impõe que a denúncia seja exercida em <b>90 dias contados do registro</b> da venda — sob pena de presumir-se a concordância com a locação (por isso a letra C erra).<br><br><b>⚠️ Pegadinha:</b> Dois prazos de 90 dias diferentes na mesma norma: o de desocupação e o decadencial para denunciar.<br><br><b>📌 Fundamento:</b> Lei 8.245/91, art. 8º, caput e §2º.<br><br><b>⚖️ Jurisprudência:</b> N/A.",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q2",
+  "materia": "Civil · Sucessões — representação",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Vicente faleceu deixando dois filhos vivos e dois netos, filhos de um terceiro filho pré-morto, Danilo. Danilo deixou dívidas que superam em muito o que possuía; seus credores pretendem penhorar a parte que 'caberia a Danilo' na herança de Vicente, sob o argumento de que os netos apenas recebem o que passaria pelo patrimônio do pai. Nos termos do Código Civil e da orientação do STJ, a pretensão dos credores de Danilo",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "prospera, pois na representação o quinhão transita juridicamente pelo patrimônio do representado antes de alcançar os representantes."
+   },
+   {
+    "letra": "B",
+    "texto": "prospera até o limite das forças do quinhão, pois os representantes respondem pelas dívidas do representado."
+   },
+   {
+    "letra": "C",
+    "texto": "não prospera, pois os netos sucedem diretamente o avô: o bem herdado por representação nunca integrou o patrimônio do pré-morto."
+   },
+   {
+    "letra": "D",
+    "texto": "não prospera apenas se os netos renunciarem à herança do pai, aceitando somente a do avô."
+   },
+   {
+    "letra": "E",
+    "texto": "prospera, pois a saisine transmitiu a herança de Vicente também aos herdeiros do pré-morto."
+   }
+  ],
+  "correta": "C",
+  "comentario": "<b>✅ Gabarito: LETRA C</b><br><br><b>⚖️ Por quê:</b> Na sucessão por estirpe, os representantes <b>sucedem diretamente o autor da herança</b> (art. 1.851 e ss. do CC): o representante herda 'no lugar' do representado, mas o quinhão vem do avô e <b>jamais integrou o patrimônio do pré-morto</b>. Logo, os credores de Danilo nada alcançam — tese do STJ cobrada no simulado-modelo (AREsp 2.291.621-RO).<br><br><b>⚠️ Pegadinha:</b> A letra D mistura os planos: as heranças de Danilo e de Vicente são autônomas; a renúncia à primeira é irrelevante para a segunda. Detalhe fino do art. 1.856: o renunciante à herança de uma pessoa PODE representá-la na sucessão de outra.<br><br><b>📌 Fundamento:</b> CC, arts. 1.851, 1.854 e 1.856.<br><br><b>⚖️ Jurisprudência:</b> STJ, AREsp 2.291.621-RO.",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q3",
+  "materia": "Org. das serventias — RCPJ",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Cinco moradores de um bairro de Cuiabá assinaram, em janeiro, a ata de fundação e o estatuto de uma associação de proteção animal, elegendo a diretoria. Em março, antes de qualquer registro, a associação celebrou contrato de patrocínio; em abril, o estatuto foi registrado no Registro Civil das Pessoas Jurídicas. Meses depois, deliberou-se a dissolução. Sobre a existência legal da entidade, assinale a opção correta.",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "A associação existe desde a assembleia de fundação, tendo o registro efeito meramente declaratório e retroativo."
+   },
+   {
+    "letra": "B",
+    "texto": "A dissolução opera-se pela simples deliberação assemblear, independentemente de qualquer ato registral."
+   },
+   {
+    "letra": "C",
+    "texto": "A associação só adquiriu personalidade com a inscrição no CNPJ, ato de natureza tributária constitutiva."
+   },
+   {
+    "letra": "D",
+    "texto": "O contrato de patrocínio é nulo, pois celebrado por ente inexistente, sem possibilidade de aproveitamento."
+   },
+   {
+    "letra": "E",
+    "texto": "A existência legal da pessoa jurídica começou apenas com a inscrição do ato constitutivo no RCPJ; antes disso, o ente atuou sem personalidade, e a dissolução deverá ser averbada no mesmo registro."
+   }
+  ],
+  "correta": "E",
+  "comentario": "<b>✅ Gabarito: LETRA E</b><br><br><b>⚖️ Por quê:</b> Art. 45 do CC: a existência legal das pessoas jurídicas de direito privado <b>começa com a inscrição do ato constitutivo no respectivo registro</b> (RCPJ, art. 114 da LRP). O registro é CONSTITUTIVO. Antes dele há mera sociedade/associação em comum (despersonificada); e o encerramento (dissolução) deve ser <b>averbado</b> no registro (art. 45, parte final; padrão reforçado no Código de Normas-MT).<br><br><b>⚠️ Pegadinha:</b> D exagera — os atos do período despersonificado não são nulos: obrigam quem os praticou (responsabilidade dos sócios/administradores, arts. 986 e ss. do CC, aplicáveis por analogia).<br><br><b>📌 Fundamento:</b> CC, art. 45; LRP, arts. 114 e 121.<br><br><b>⚖️ Jurisprudência:</b> N/A.",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q4",
+  "materia": "Registro Civil — nome do recém-nascido",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Bruno registrou sozinho o nascimento da filha, atribuindo-lhe o nome completo 'Aurora Vitória', sem consultar a mãe, Renata, que ainda estava hospitalizada. Renata discorda do prenome escolhido. Nos termos do Provimento nº 149/2023 do CNJ (Código Nacional de Normas), Renata pode",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "opor-se ao nome perante o registro civil no prazo de 15 dias contado do registro, indicando o nome substituto e os motivos da discordância."
+   },
+   {
+    "letra": "B",
+    "texto": "apenas ajuizar ação de retificação de registro, pois o assento lavrado só se altera por decisão judicial."
+   },
+   {
+    "letra": "C",
+    "texto": "alterar o nome diretamente no cartório a qualquer tempo, enquanto a filha for menor de idade."
+   },
+   {
+    "letra": "D",
+    "texto": "opor-se no prazo de 30 dias, mediante escritura pública de retratação registral."
+   },
+   {
+    "letra": "E",
+    "texto": "nada fazer, pois o genitor declarante exerce com exclusividade o direito de nomeação."
+   }
+  ],
+  "correta": "A",
+  "comentario": "<b>✅ Gabarito: LETRA A</b><br><br><b>⚖️ Por quê:</b> O Código Nacional de Normas (Prov. 149/2023, art. 515-C) assegura ao genitor que não participou da declaração o direito de <b>opor-se ao nome em até 15 dias do registro</b>, perante o próprio RCPN, <b>indicando o nome substituto e os motivos</b> — a divergência é submetida ao juiz competente. É a válvula administrativa que dispensa a ação judicial imediata.<br><br><b>⚠️ Pegadinha:</b> B repete o dogma superado da reserva judicial absoluta; C não existe (a via administrativa é excepcional e com prazo).<br><br><b>📌 Fundamento:</b> Provimento CNJ 149/2023 (CNN), art. 515-C.<br><br><b>⚖️ Jurisprudência:</b> N/A.",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q5",
+  "materia": "Constitucional — direitos políticos",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Governadora em primeiro mandato, Marina pretende disputar uma vaga no Senado Federal nas eleições de outubro. Seu marido, Sávio, deputado estadual no mesmo Estado, pretende disputar a reeleição. Nos termos da Constituição Federal, assinale a opção correta.",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "Marina deve renunciar ao mandato de Governadora até seis meses antes do pleito, e Sávio pode disputar a reeleição, pois a inelegibilidade reflexa não alcança o titular de mandato candidato à reeleição."
+   },
+   {
+    "letra": "B",
+    "texto": "Marina pode concorrer ao Senado sem se afastar, pois a exigência de desincompatibilização só alcança quem disputa a reeleição."
+   },
+   {
+    "letra": "C",
+    "texto": "Sávio é inelegível para qualquer cargo no Estado, pois cônjuge de chefe do Executivo não pode disputar eleição alguma na circunscrição."
+   },
+   {
+    "letra": "D",
+    "texto": "Marina deve renunciar até um ano antes do pleito, prazo aplicável aos chefes do Executivo estadual."
+   },
+   {
+    "letra": "E",
+    "texto": "Ambos são inelegíveis, pois a inelegibilidade reflexa contamina reciprocamente os cônjuges detentores de mandato."
+   }
+  ],
+  "correta": "A",
+  "comentario": "<b>✅ Gabarito: LETRA A</b><br><br><b>⚖️ Por quê:</b> Art. 14, §6º, CF: para concorrer a OUTROS cargos, o chefe do Executivo deve <b>renunciar até 6 meses antes do pleito</b> (desincompatibilização). E o §7º (inelegibilidade reflexa) tem ressalva expressa: o cônjuge/parente até 2º grau é inelegível no território do titular, <b>salvo se já titular de mandato eletivo e candidato à reeleição</b> — exatamente o caso de Sávio.<br><br><b>⚠️ Pegadinha:</b> O simulado-modelo cobrou o mesmo par §6º/§7º com renúncia FORA do prazo (5 meses antes → inelegível). Guarde: 6 meses é o marco de tudo.<br><br><b>📌 Fundamento:</b> CF, art. 14, §§6º e 7º.<br><br><b>⚖️ Jurisprudência:</b> TSE/STF — Súmula Vinculante 18 (dissolução do vínculo no curso do mandato não afasta a inelegibilidade reflexa).",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q6",
+  "materia": "Registro de Imóveis — retificação",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Ao conferir uma matrícula, o oficial percebeu que o sobrenome da proprietária constava como 'Olivera', embora a escritura arquivada e todos os documentos grafem 'Oliveira'. Na mesma semana, a proprietária requereu também a retificação do perímetro do imóvel, com inserção de novas medidas apuradas por georreferenciamento, juntando planta e ART assinadas por profissional habilitado e por ela própria. Nos termos do art. 213 da Lei nº 6.015/1973, assinale a opção correta.",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "Ambas as retificações exigem procedimento judicial, pois alteram o conteúdo de assento público."
+   },
+   {
+    "letra": "B",
+    "texto": "A retificação de medidas perimetrais só é possível por usucapião extrajudicial, com ata notarial."
+   },
+   {
+    "letra": "C",
+    "texto": "As duas retificações podem ser feitas de ofício, pois o oficial responde pela exatidão integral da matrícula."
+   },
+   {
+    "letra": "D",
+    "texto": "O erro no sobrenome pode ser retificado de ofício pelo oficial, por ser evidente e comprovado pelos documentos arquivados; a retificação de medidas segue o procedimento a requerimento, com anuência dos confrontantes — reputando-se anuente o confrontante notificado que não impugna em 15 dias."
+   },
+   {
+    "letra": "E",
+    "texto": "O silêncio do confrontante notificado presume discordância, remetendo o procedimento ao juízo competente."
+   }
+  ],
+  "correta": "D",
+  "comentario": "<b>✅ Gabarito: LETRA D</b><br><br><b>⚖️ Por quê:</b> Art. 213, I, da LRP: o oficial retifica <b>de ofício ou a requerimento</b> nos casos de erro evidente (omissão/erro cometido na transposição de elementos do título, indicação errônea de nome etc.). Já a inserção/alteração de <b>medidas perimetrais</b> é o inciso II: requerimento do interessado com planta e memorial assinados por profissional habilitado e pelos confrontantes — e, notificado o confrontante que não impugna em <b>15 dias</b>, presume-se a <b>anuência</b> (art. 213, §4º).<br><br><b>⚠️ Pegadinha:</b> E inverte a presunção (a Lei 10.931/2004 desjudicializou a retificação justamente com o silêncio-anuência).<br><br><b>📌 Fundamento:</b> LRP, art. 213, I, II e §4º.<br><br><b>⚖️ Jurisprudência:</b> N/A.",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q7",
+  "materia": "Protesto — central nacional",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Um tabelião de protesto recém-delegado em comarca do interior questiona se está obrigado a integrar a central nacional de serviços eletrônicos compartilhados dos tabelionatos de protesto e se pode cobrar do público pelas consultas a ela. Nos termos da Lei nº 9.492/1997, com as alterações da Lei nº 14.711/2023, assinale a opção correta.",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "A adesão à central é facultativa, e as consultas podem ser cobradas segundo a tabela local de emolumentos."
+   },
+   {
+    "letra": "B",
+    "texto": "A adesão é obrigatória, mas cada tabelionato define livremente o preço das consultas à central."
+   },
+   {
+    "letra": "C",
+    "texto": "A adesão é obrigatória e as consultas à central nacional são gratuitas, admitida cobrança apenas por serviços de escrituração e complementares específicos."
+   },
+   {
+    "letra": "D",
+    "texto": "A central nacional substituiu os tabelionatos na lavratura dos protestos, que passou a ser eletrônica e centralizada."
+   },
+   {
+    "letra": "E",
+    "texto": "A adesão é obrigatória apenas para os tabelionatos das capitais, dada a inviabilidade técnica nas demais comarcas."
+   }
+  ],
+  "correta": "C",
+  "comentario": "<b>✅ Gabarito: LETRA C</b><br><br><b>⚖️ Por quê:</b> O art. 41-A da Lei 9.492/97 (Lei 14.711/2023) estruturou a central nacional (CENPROT) com <b>adesão obrigatória</b> de todos os tabelionatos de protesto (§2º) e <b>gratuidade das consultas e serviços essenciais</b> ao público (inciso III e §4º); a cobrança fica restrita a escrituração e serviços complementares específicos.<br><br><b>⚠️ Pegadinha:</b> D exagera a desmaterialização: a central compartilha serviços eletrônicos, mas o protesto continua sendo lavrado pelo tabelião competente.<br><br><b>📌 Fundamento:</b> Lei 9.492/97, art. 41-A, III, §§2º e 4º.<br><br><b>⚖️ Jurisprudência:</b> N/A.",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q8",
+  "materia": "Penal — crimes de preconceito",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Durante uma discussão de trânsito filmada por testemunhas, Ivo dirigiu a Marcos ofensas humilhantes referentes à sua procedência nacional; em outro episódio, na mesma semana, ofendeu a vizinha com insultos à sua religião. Considerando a Lei nº 7.716/1989, com as alterações da Lei nº 14.532/2023, e o Código Penal, assinale a opção correta.",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "As duas condutas configuram injúria racial do art. 2º-A da Lei 7.716/1989, crime imprescritível."
+   },
+   {
+    "letra": "B",
+    "texto": "A ofensa pela procedência nacional configura a injúria racial do art. 2º-A da Lei 7.716/1989, equiparada a racismo; a ofensa à religião permanece tipificada como injúria qualificada no Código Penal."
+   },
+   {
+    "letra": "C",
+    "texto": "As duas condutas configuram injúria qualificada do Código Penal, de ação penal privada."
+   },
+   {
+    "letra": "D",
+    "texto": "A ofensa religiosa configura o crime do art. 2º-A da Lei 7.716/1989; a ofensa pela procedência nacional, a injúria comum."
+   },
+   {
+    "letra": "E",
+    "texto": "Ambas as condutas são atípicas se proferidas em contexto de exaltação recíproca de ânimos."
+   }
+  ],
+  "correta": "B",
+  "comentario": "<b>✅ Gabarito: LETRA B</b><br><br><b>⚖️ Por quê:</b> A Lei 14.532/2023 transplantou a injúria racial para o art. 2º-A da Lei 7.716/89, abrangendo ofensas em razão de <b>raça, cor, etnia ou procedência nacional</b> (equiparada a racismo: imprescritível, inafiançável, ação pública incondicionada, reclusão de 2 a 5 anos). A ofensa em razão de <b>religião</b> NÃO migrou: continua no art. 140, §3º, do CP (injúria qualificada).<br><br><b>⚠️ Pegadinha:</b> Foi exatamente o corte cobrado no simulado-modelo — 'religião está fora do tipo' do art. 2º-A. A letra D inverte os regimes.<br><br><b>📌 Fundamento:</b> Lei 7.716/89, art. 2º-A (Lei 14.532/2023); CP, art. 140, §3º.<br><br><b>⚖️ Jurisprudência:</b> STF, ADO 26 (racismo social — parâmetro interpretativo).",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q9",
+  "materia": "Empresarial — sociedade em comandita simples",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "Na sociedade em comandita simples Rio Verde Grãos, Alfredo figura como comanditado e a investidora Beatriz como comanditária. Beatriz, insatisfeita com os rumos do negócio, passou a assinar contratos com fornecedores em nome da sociedade, sem procuração especial. Nos termos do Código Civil, assinale a opção correta.",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "A responsabilidade de Beatriz é subsidiária e ilimitada, por aplicação do regime da sociedade em nome coletivo."
+   },
+   {
+    "letra": "B",
+    "texto": "Ambos respondem limitadamente, pois a comandita simples é espécie de sociedade limitada com duas classes de quotas."
+   },
+   {
+    "letra": "C",
+    "texto": "Beatriz pode praticar atos de gestão livremente, vedado apenas que seu nome conste da firma social."
+   },
+   {
+    "letra": "D",
+    "texto": "Alfredo pode ser pessoa jurídica, desde que administrada por pessoa natural residente no país."
+   },
+   {
+    "letra": "E",
+    "texto": "Alfredo, comanditado, deve ser pessoa física e responde solidária e ilimitadamente pelas obrigações sociais; Beatriz, comanditária, obriga-se somente pelo valor de sua quota, mas, ao praticar atos de gestão, sujeita-se à responsabilidade ilimitada."
+   }
+  ],
+  "correta": "E",
+  "comentario": "<b>✅ Gabarito: LETRA E</b><br><br><b>⚖️ Por quê:</b> Art. 1.045 do CC: comanditados são <b>pessoas físicas</b>, responsáveis <b>solidária e ilimitadamente</b>; comanditários obrigam-se <b>somente pelo valor de sua quota</b>. O art. 1.047 veda ao comanditário praticar atos de gestão e ter o nome na firma, <b>sob pena de ficar sujeito às responsabilidades de comanditado</b> (pode, porém, ser constituído procurador para negócio determinado).<br><br><b>⚠️ Pegadinha:</b> C inverte o art. 1.047 (a vedação central é justamente a gestão); D contraria a exigência de pessoa física para o comanditado.<br><br><b>📌 Fundamento:</b> CC, arts. 1.045 e 1.047.<br><br><b>⚖️ Jurisprudência:</b> N/A.",
+  "tipo": "multipla"
+ },
+ {
+  "id": "q10",
+  "materia": "Administrativo — processo administrativo",
+  "banca": "Inédita · estilo Estratégia/CEBRASPE · Protótipo TJMT (2026)",
+  "enunciado": "No curso de processo administrativo federal instaurado a partir de representação, o advogado do interessado requereu vista dos autos e cópia integral das peças, incluindo documentos fiscais e bancários de OUTRA empresa, juntados por terceiro e protegidos por sigilo. A autoridade deferiu a vista, mas negou a cópia dos documentos sigilosos do terceiro. À luz da Lei nº 9.784/1999, a decisão da autoridade foi",
+  "alternativas": [
+   {
+    "letra": "A",
+    "texto": "ilegal, pois o direito de vista e cópia é absoluto para o interessado e seu advogado."
+   },
+   {
+    "letra": "B",
+    "texto": "ilegal, pois a vista dos autos exige requerimento deferido pelo órgão máximo da entidade."
+   },
+   {
+    "letra": "C",
+    "texto": "incorreta, pois documentos juntados aos autos perdem automaticamente qualquer proteção de sigilo."
+   },
+   {
+    "letra": "D",
+    "texto": "correta, pois o interessado tem direito de ter ciência da tramitação, vista dos autos e cópias, ressalvados os dados e documentos de terceiros protegidos por sigilo ou pelo direito à privacidade."
+   },
+   {
+    "letra": "E",
+    "texto": "correta apenas se houver decisão judicial prévia decretando o sigilo dos documentos."
+   }
+  ],
+  "correta": "D",
+  "comentario": "<b>✅ Gabarito: LETRA D</b><br><br><b>⚖️ Por quê:</b> Arts. 3º, II, e 46 da Lei 9.784/99: o administrado tem direito à <b>ciência da tramitação, vista dos autos e obtenção de cópias</b> — mas a própria lei ressalva os <b>dados e documentos de terceiros protegidos por sigilo ou pelo direito à privacidade, à honra e à imagem</b>. O sigilo decorre da lei, não de decisão judicial (derruba a E).<br><br><b>⚠️ Pegadinha:</b> O 'direito absoluto' da letra A não existe nem para o advogado — a Súmula Vinculante 14 (acesso a elementos de prova) também se limita ao que diz respeito ao próprio investigado.<br><br><b>📌 Fundamento:</b> Lei 9.784/99, arts. 3º, II, e 46.<br><br><b>⚖️ Jurisprudência:</b> Súmula Vinculante 14 (paralelo).",
+  "tipo": "multipla"
+ }
+];
+function defaultState(){return{respostas:{},revisao:{},caderno:{},revisarDepois:{},posicao:0,modo:'todas',materiaFiltro:'',notas:{}};}
+let state=defaultState(),lista=[],paused=false,qSecs=0,sSecs=0,timerInterval=null,commentOpen={};
+function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+function loadState(){try{var raw=localStorage.getItem(STORE_KEY);if(raw){state=Object.assign(defaultState(),JSON.parse(raw));}}catch(e){state=defaultState();}}
+function today(){return new Date().toISOString().split('T')[0];}
+function addDays(d,n){var dt=new Date(d+'T12:00:00');dt.setDate(dt.getDate()+n);return dt.toISOString().split('T')[0];}
+function fmtDate(iso){if(!iso)return'';var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function buildLista(){var t=today(),ids;if(state.modo==='todas'){ids=QUESTOES.map(function(q){return q.id;});}else if(state.modo==='hoje'){ids=QUESTOES.filter(function(q){var r=state.revisao[q.id];return r&&r.nextDate&&r.nextDate<=t;}).map(function(q){return q.id;});}else if(state.modo==='caderno'){ids=QUESTOES.filter(function(q){return state.caderno[q.id]||state.revisarDepois[q.id];}).map(function(q){return q.id;});}else if(state.modo==='materia'){var m=state.materiaFiltro;ids=QUESTOES.filter(function(q){return !m||q.materia===m;}).map(function(q){return q.id;});}else if(state.modo==='aleatorio'){ids=shuffle(QUESTOES.map(function(q){return q.id;}));}else{ids=QUESTOES.map(function(q){return q.id;});}return ids;}
+function computeStats(){var total=QUESTOES.length,acertos=0,erros=0,t=today(),revisadasHoje=0;QUESTOES.forEach(function(q){var r=state.respostas[q.id];if(r){if(r===q.correta)acertos++;else erros++;}var rev=state.revisao[q.id];if(rev&&rev.lastAnswered===t)revisadasHoje++;});var respondidas=acertos+erros,pendentes=total-respondidas,pct=total>0?Math.round(respondidas/total*100):0;return{total:total,acertos:acertos,erros:erros,pendentes:pendentes,revisadasHoje:revisadasHoje,respondidas:respondidas,pct:pct};}
+function renderStats(){var s=computeStats();document.getElementById('statsBar').innerHTML='<div class="stat-chip"><span class="sv green">'+s.acertos+'</span><span class="sl">Acertos</span></div><div class="stat-chip"><span class="sv red">'+s.erros+'</span><span class="sl">Erros</span></div><div class="stat-chip"><span class="sv amber">'+s.pendentes+'</span><span class="sl">Pendentes</span></div><div class="stat-chip"><span class="sv cyan">'+s.revisadasHoje+'</span><span class="sl">Revisadas hoje</span></div>';var fill=document.getElementById('progressFill'),lbl=document.getElementById('progressLabel');if(fill)fill.style.width=s.pct+'%';if(lbl)lbl.textContent=s.respondidas+'/'+s.total+' respondidas ('+s.pct+'%)';}
+function fmtTime(secs){return String(Math.floor(secs/60)).padStart(2,'0')+':'+String(secs%60).padStart(2,'0');}
+function startTimers(){if(timerInterval)clearInterval(timerInterval);timerInterval=setInterval(function(){if(!paused){qSecs++;sSecs++;}var q=document.getElementById('timerQ'),s=document.getElementById('timerS');if(q)q.textContent=fmtTime(qSecs);if(s)s.textContent=fmtTime(sSecs);},1000);}
+function resetQTimer(){qSecs=0;var q=document.getElementById('timerQ');if(q)q.textContent='00:00';}
+function togglePause(){paused=!paused;var b=document.getElementById('btnPause');if(b)b.textContent=paused?'Retomar':'Pausar';}
+function scheduleNext(id,acertou){var t=today(),rv=state.revisao[id]||{nextDate:null,interval:1,acertos:0,lastAnswered:null};rv.lastAnswered=t;if(acertou){rv.acertos=(rv.acertos||0)+1;rv.interval=rv.acertos===1?1:rv.acertos===2?7:30;}else{rv.acertos=0;rv.interval=1;}rv.nextDate=addDays(t,rv.interval);state.revisao[id]=rv;}
+function scheduleManual(id,days){var t=today(),rv=state.revisao[id]||{nextDate:null,interval:days,acertos:0,lastAnswered:t};rv.nextDate=days===0?null:addDays(t,days);rv.interval=days;state.revisao[id]=rv;saveState();renderCard();}
+function reviewBadgeHTML(id){var rv=state.revisao[id];if(!rv||!rv.nextDate)return'';if(rv.nextDate<=today())return'<span class="review-badge review-today">revisar hoje ⏰</span>';return'<span class="review-badge review-future">📅 '+fmtDate(rv.nextDate)+'</span>';}
+function schedRowHTML(id){return'<div class="sched-row"><span class="sched-label">Agendar:</span><button class="sched-btn" onclick="scheduleManual(\''+id+'\',1)">1 dia</button><button class="sched-btn" onclick="scheduleManual(\''+id+'\',7)">7 dias</button><button class="sched-btn" onclick="scheduleManual(\''+id+'\',30)">30 dias</button><button class="sched-btn remove" onclick="scheduleManual(\''+id+'\',0)">remover</button></div>';}
+function starBtnHTML(id){var active=state.revisarDepois[id]?' active':'',label=state.revisarDepois[id]?'⭐ No caderno':'☆ Revisar depois';return'<button class="star-btn'+active+'" onclick="toggleStar(\''+id+'\')">'+label+'</button>';}
+function toggleStar(id){if(state.revisarDepois[id])delete state.revisarDepois[id];else state.revisarDepois[id]=true;saveState();renderCard();renderStats();}
+function selecionarAlternativa(id,letra){if(state.respostas[id])return;document.querySelectorAll('.alt-btn[data-id="'+id+'"]').forEach(function(b){b.classList.remove('selected');});var btn=document.querySelector('.alt-btn[data-id="'+id+'"][data-letra="'+letra+'"]');if(btn)btn.classList.add('selected');var c=document.getElementById('confirm-'+id);if(c)c.disabled=false;}
+function confirmar(id){var q=QUESTOES.find(function(x){return x.id===id;});if(!q)return;var sel=document.querySelector('.alt-btn[data-id="'+id+'"].selected');if(!sel)return;var letra=sel.dataset.letra;state.respostas[id]=letra;var acertou=letra===q.correta;scheduleNext(id,acertou);if(!acertou)state.caderno[id]=true;saveState();renderCard();renderStats();}
+function toggleComment(id){commentOpen[id]=!commentOpen[id];var body=document.getElementById('comment-body-'+id),tog=document.getElementById('comment-toggle-'+id);if(body)body.classList.toggle('open',!!commentOpen[id]);if(tog)tog.textContent=commentOpen[id]?'▲ Ocultar comentário':'▼ Ver comentário / gabarito (ICOL)';}
+function salvarNota(id,txt){if(!state.notas)state.notas={};state.notas[id]=txt;saveState();}
+function renderCard(){var cont=document.getElementById('mainContent');if(!lista.length){cont.innerHTML='<div class="empty-state"><div class="icon">📭</div><div>Nenhuma questão neste filtro.</div></div>';return;}var pos=Math.min(Math.max(state.posicao,0),lista.length-1);state.posicao=pos;var id=lista[pos],q=QUESTOES.find(function(x){return x.id===id;});if(!q){cont.innerHTML='';return;}var resposta=state.respostas[id],respondida=!!resposta,acertou=respondida&&resposta===q.correta;var resultHTML='';if(respondida){resultHTML=acertou?'<div class="result-banner correct">✅ Correto! Resposta: '+resposta+'</div>':'<div class="result-banner wrong">❌ Incorreto. Sua resposta: '+resposta+' | Gabarito: '+q.correta+'</div>';}var altsHTML='<div class="alts">';q.alternativas.forEach(function(alt){var btnCls='alt-btn',letraCls='alt-letra',disabled=respondida?'disabled':'';if(respondida){if(alt.letra===q.correta&&alt.letra===resposta){btnCls='alt-btn correct';letraCls='alt-letra correct';}else if(alt.letra===q.correta){btnCls='alt-btn reveal-correct';letraCls='alt-letra reveal-correct';}else if(alt.letra===resposta){btnCls='alt-btn wrong';letraCls='alt-letra wrong';}}altsHTML+='<button class="'+btnCls+'" data-id="'+id+'" data-letra="'+alt.letra+'" '+disabled+' onclick="selecionarAlternativa(\''+id+'\',\''+alt.letra+'\')"><span class="'+letraCls+'">'+alt.letra+'</span><span>'+alt.texto+'</span></button>';});altsHTML+='</div>';var confirmHTML=respondida?'':'<button class="btn-confirm" id="confirm-'+id+'" onclick="confirmar(\''+id+'\')" disabled>Confirmar</button>';var cOpen=commentOpen[id]?' open':'',cLabel=commentOpen[id]?'▲ Ocultar comentário':'▼ Ver comentário / gabarito (ICOL)';var commentHTML=respondida?'<div class="comment-wrap"><button class="comment-toggle" id="comment-toggle-'+id+'" onclick="toggleComment(\''+id+'\')">'+cLabel+'</button><div class="comment-body'+cOpen+'" id="comment-body-'+id+'">'+q.comentario+'</div></div>':'';var schedHTML=respondida?schedRowHTML(id):'';var notaVal=(state.notas&&state.notas[id])?state.notas[id]:'';var notasHTML='<div class="notas-wrap"><div class="notas-label">📝 Minhas anotações</div><textarea class="notas-area" placeholder="Escreva aqui suas anotações sobre esta questão…" oninput="salvarNota(\''+id+'\', this.value)">'+notaVal.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea></div>';cont.innerHTML='<div class="nav-counter">Questão '+(pos+1)+' de '+lista.length+'</div><div class="card"><div class="card-meta"><span class="badge badge-banca">'+q.banca+'</span><span class="badge badge-materia">'+q.materia+'</span>'+reviewBadgeHTML(id)+starBtnHTML(id)+claudeBtnHTML(id)+'</div><div class="enunciado">'+q.enunciado+'</div>'+altsHTML+confirmHTML+resultHTML+commentHTML+schedHTML+notasHTML+'</div><div class="nav-row"><button class="nav-btn" onclick="navPrev()" '+(pos===0?'disabled':'')+'>← Anterior</button><button class="nav-btn" onclick="navNext()" '+(pos>=lista.length-1?'disabled':'')+'>Próxima →</button></div>';}
+function navPrev(){if(state.posicao>0){state.posicao--;saveState();resetQTimer();renderCard();}}
+function navNext(){if(state.posicao<lista.length-1){state.posicao++;saveState();resetQTimer();renderCard();}}
+function setModo(modo){state.modo=modo;state.posicao=0;var sel=document.getElementById('materiaSelect');if(sel)sel.style.display=modo==='materia'?'':'none';document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.modo===modo);});lista=buildLista();saveState();resetQTimer();renderCard();renderStats();}
+function setMateriaFiltro(val){state.materiaFiltro=val;state.posicao=0;lista=buildLista();saveState();resetQTimer();renderCard();}
+function populateMateriaSelect(){var materias=[];QUESTOES.forEach(function(q){if(materias.indexOf(q.materia)===-1)materias.push(q.materia);});materias.sort();var sel=document.getElementById('materiaSelect');if(!sel)return;sel.innerHTML='<option value="">— Escolha —</option>';materias.forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=m;if(m===state.materiaFiltro)o.selected=true;sel.appendChild(o);});}
+function recomecar(){if(confirm('Tem certeza? Todo o progresso será apagado permanentemente.')){localStorage.removeItem(STORE_KEY);location.reload();}}
+function exportarProgresso(){var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='progresso_'+SLUG+'_'+today()+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}
+function exportarNotas(){var txt='ANOTAÇÕES — '+document.title+'\n'+today()+'\n\n',n=0;QUESTOES.forEach(function(q){var nota=state.notas&&state.notas[q.id];if(nota&&nota.trim()){n++;txt+='【'+q.banca+' · '+q.materia+'】\n'+nota.trim()+'\n\n';}});if(!n){alert('Você ainda não tem anotações registradas.');return;}var blob=new Blob([txt],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='anotacoes_'+SLUG+'_'+today()+'.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}
+function importarProgresso(evt){var file=evt.target.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){try{state=Object.assign(defaultState(),JSON.parse(e.target.result));saveState();lista=buildLista();populateMateriaSelect();document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.modo===state.modo);});var sel=document.getElementById('materiaSelect');if(sel)sel.style.display=state.modo==='materia'?'':'none';renderStats();renderCard();alert('Progresso importado com sucesso!');}catch(err){alert('Arquivo inválido ou corrompido.');}};reader.readAsText(file);evt.target.value='';}
+function dismissIframeBanner(){var b=document.getElementById('bannerIframe');if(b)b.style.display='none';try{sessionStorage.setItem('iframe_banner_dismissed','1');}catch(e){}}
+function checkIframeBanner(){try{if(sessionStorage.getItem('iframe_banner_dismissed')==='1'){var b=document.getElementById('bannerIframe');if(b)b.style.display='none';}}catch(e){}}
+function init(){loadState();checkIframeBanner();populateMateriaSelect();document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.modo===state.modo);});var sel=document.getElementById('materiaSelect');if(sel&&state.modo==='materia')sel.style.display='';lista=buildLista();renderStats();renderCard();startTimers();}
+function claudeBtnHTML(id){return '<button class="claude-qbtn" onclick="askClaude(\''+id+'\')">🤖</button>';}
+function askClaude(id){var q=QUESTOES.find(function(x){return x.id===id;});if(!q)return;var ctx=document.title+' · Questão '+id+'\nTema: '+q.materia+'\nBanca: '+(q.banca||'')+'\nConcurso: Cartório TJMT\n\nEnunciado:\n'+q.enunciado.replace(/<[^>]+>/g,'')+'\n\nTenho uma dúvida sobre esta questão:\n';navigator.clipboard.writeText(ctx).catch(function(){});window.open('https://claude.ai','_blank');}
+init();
+</script>
+</body>
+</html>
