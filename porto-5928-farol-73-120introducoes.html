@@ -1,0 +1,308 @@
+<meta charset="utf-8">
+<title>120 Introduções — fórmula mestra (2ª Fase · CEBRASPE)</title>
+<style>
+  :root{
+    --bg:#eef1f4; --card:#fff; --ink:#17263b; --muted:#5c6b79; --line:#dde3ea; --spine:#c6d2dc;
+    --accent:#0e7c86; --gold:#b5820a; --m1:#1c6db5; --m2:#2e7d5b; --m3:#6d4c91; --m4:#c2570c;
+    --shadow:0 6px 22px rgba(20,40,60,.10); --hf:"Cambria","Georgia",serif; --bf:"Calibri","Segoe UI",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){ :root{ --bg:#0f151c; --card:#182430; --ink:#e8eef4; --muted:#9fb0be; --line:#2a3a48; --spine:#31465a; --accent:#37b3a8; --gold:#e6b23e; --m1:#5aa2e0; --m2:#6bbf92; --m3:#a98fd0; --m4:#e0894f; --shadow:0 6px 22px rgba(0,0,0,.35);} }
+  :root[data-theme="light"]{ --bg:#eef1f4; --card:#fff; --ink:#17263b; --muted:#5c6b79; --line:#dde3ea; --spine:#c6d2dc; }
+  :root[data-theme="dark"]{ --bg:#0f151c; --card:#182430; --ink:#e8eef4; --muted:#9fb0be; --line:#2a3a48; --spine:#31465a; }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--bf);line-height:1.5;padding:32px 16px 70px;}
+  .wrap{max-width:940px;margin:0 auto;}
+  .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;}
+  h1{font-family:var(--hf);font-size:clamp(26px,4vw,38px);margin:.1em 0 .1em;text-wrap:balance;}
+  .sub{color:var(--muted);font-size:15px;max-width:66ch;}
+  .legend{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;margin:16px 0;font-size:13.5px;}
+  .legend .molde{font-family:var(--hf);font-size:15px;line-height:1.7;margin-top:4px;}
+  .chip{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;border-radius:5px;padding:1px 7px;margin-right:2px;vertical-align:1px;}
+  .c1{background:var(--m1);} .c2{background:var(--m2);} .c3{background:var(--m3);} .c4{background:var(--m4);}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 6px;}
+  input.search{flex:1;min-width:180px;font:inherit;font-size:14px;padding:9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);}
+  .filters{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px;}
+  .filters button{font:inherit;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--muted);padding:5px 11px;border-radius:20px;}
+  .filters button.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .bar{display:flex;align-items:center;gap:14px;margin:4px 0 18px;flex-wrap:wrap;}
+  .prog{font-size:13px;color:var(--muted);font-weight:600;} .prog b{color:var(--ink);font-variant-numeric:tabular-nums;}
+  button.revealall{font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:8px;box-shadow:var(--shadow);}
+  button.revealall:hover{border-color:var(--gold);}
+  .disc-h{font-family:var(--hf);font-size:19px;margin:26px 0 4px;border-top:1px solid var(--line);padding-top:16px;color:var(--accent);}
+  .disc-h .cnt{font-family:var(--bf);font-size:12px;color:var(--muted);font-weight:600;}
+  .list{display:flex;flex-direction:column;gap:10px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);overflow:hidden;}
+  .card.open{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));}
+  .head{width:100%;text-align:left;background:none;border:0;cursor:pointer;padding:13px 16px;display:grid;grid-template-columns:34px 1fr auto;gap:0 12px;align-items:center;font-family:var(--bf);color:var(--ink);}
+  .head .num{grid-row:1 / span 2;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;}
+  .head .nm{grid-column:2;font-family:var(--hf);font-size:18px;font-weight:700;line-height:1.2;}
+  .head .disc{grid-column:2;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+  .head .chev{grid-column:3;grid-row:1 / span 2;font-size:14px;color:var(--muted);width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;transition:transform .25s,background .2s;}
+  .card.open .chev{transform:rotate(90deg);background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);border-color:transparent;}
+  .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease;}
+  .card.open .body{grid-template-rows:1fr;}
+  .body > .inner{overflow:hidden;min-height:0;}
+  .pad{padding:2px 16px 16px;border-top:1px solid var(--line);}
+  .sect{font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin:13px 0 6px;}
+  .prose{font-family:var(--hf);font-size:15.5px;line-height:1.78;}
+  .tg{display:inline-block;font-family:var(--bf);font-weight:800;font-size:9.5px;color:#fff;border-radius:4px;padding:0 5px;margin-right:3px;vertical-align:1.5px;line-height:16px;}
+  .none{color:var(--muted);font-size:14px;padding:20px 4px;display:none;}
+  .foot{margin-top:26px;color:var(--muted);font-size:12.5px;text-align:center;line-height:1.7;}
+  .warn{color:color-mix(in srgb,var(--gold) 80%,var(--ink));}
+  .toolbar{max-width:940px;margin:0 auto 12px;text-align:right;}
+  .toolbar button{font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:1px solid var(--line);background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+  @media print{ body{background:#fff;padding:0;} .toolbar,.controls,.filters,.bar{display:none;} .card{break-inside:avoid;} .body{grid-template-rows:1fr!important;} }
+</style>
+
+<div class="toolbar"><button onclick="window.print()">Imprimir / PDF</button></div>
+<div class="wrap">
+  <div class="eyebrow">2ª Fase · Padrão CEBRASPE</div>
+  <h1>120 Introduções — fórmula mestra</h1>
+  <p class="sub">Os 120 institutos que mais caem em cartório. Clique em cada um para revelar a introdução pronta, decomposta nos <b>4 movimentos</b>. O molde é sempre o mesmo — muda só o instituto, a lei e o princípio.</p>
+
+  <div class="legend">
+    <b>Fórmula mestra da introdução:</b>
+    <div class="molde">
+      <span class="chip c1">① NOME + GÊNERO</span> “[Instituto] é o(a) [negócio/ação/direito/serviço]…” &nbsp;
+      <span class="chip c2">② SEDE LEGAL</span> “…disciplinado(a) pela [lei/art.]…” &nbsp;
+      <span class="chip c3">③ FUNÇÃO</span> “…que [o que faz / para quê]…” &nbsp;
+      <span class="chip c4">④ PRINCÍPIO</span> “Seu núcleo axiológico é o princípio da [X].”
+    </div>
+  </div>
+
+  <div class="controls">
+    <input class="search" id="q" type="search" placeholder="Buscar instituto (ex.: usucapião, ata, protesto, alimentos)…" autocomplete="off">
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="bar"><span class="prog">Revelados <b><span id="count">0</span>/120</b> · exibindo <b><span id="shown">120</span></b></span><button class="revealall" id="toggleAll">Revelar visíveis</button></div>
+
+  <div id="root"></div>
+  <div class="none" id="none">Nenhum instituto encontrado. Tente outra palavra.</div>
+
+  <div class="foot">O molde é sempre o mesmo — muda o instituto, a lei e o princípio.<br>
+    <span class="warn">As citações de lei e artigo são referência de estudo — confirme antes da prova.</span></div>
+</div>
+
+<script>
+// intro: [① nome+gênero, ② sede legal, ③ função/finalidade, ④ princípio reitor]
+const T=[
+// ===================== REGISTRO DE IMÓVEIS =====================
+{d:"Registro de Imóveis", n:"Registro de Imóveis", intro:["O registro de imóveis é o serviço registral","organizado pela Lei n. 6.015/1973 (arts. 167 e ss.)","que confere existência, publicidade, autenticidade, segurança e eficácia aos atos relativos à propriedade imóvel.","Seu núcleo axiológico é o princípio da segurança jurídica e da fé pública registral."]},
+{d:"Registro de Imóveis", n:"Matrícula", intro:["A matrícula é o cadastro-base do imóvel,","prevista nos arts. 176 e 227 da Lei n. 6.015/1973,","que o individualiza e concentra, em fólio próprio, toda a sua história registral.","Seu núcleo axiológico é o princípio da especialidade objetiva e da concentração."]},
+{d:"Registro de Imóveis", n:"Usucapião Extrajudicial", intro:["A usucapião extrajudicial é o modo originário de aquisição da propriedade","disciplinada pelos arts. 1.238 e ss. do Código Civil e pelo art. 216-A da Lei n. 6.015/1973,","processada perante o registrador de imóveis, com base em ata notarial, planta e memorial.","Seu núcleo axiológico é a função social da posse e da propriedade."]},
+{d:"Registro de Imóveis", n:"Alienação Fiduciária de Imóvel", intro:["A alienação fiduciária de coisa imóvel é o negócio jurídico de garantia","regido pela Lei n. 9.514/1997,","pelo qual o devedor transfere ao credor a propriedade resolúvel do bem para assegurar a obrigação.","Seu núcleo axiológico é a segurança do crédito e a concentração na matrícula."]},
+{d:"Registro de Imóveis", n:"Hipoteca", intro:["A hipoteca é o direito real de garantia sobre coisa imóvel alheia,","prevista nos arts. 1.473 e ss. do Código Civil,","que grava o bem em favor do credor sem retirar-lhe a posse, com sequela e preferência.","Seu núcleo axiológico é a segurança do crédito e a publicidade registral."]},
+{d:"Registro de Imóveis", n:"Incorporação Imobiliária", intro:["A incorporação imobiliária é a atividade de promover e construir edificação para alienação de unidades autônomas,","disciplinada pela Lei n. 4.591/1964,","que exige o registro do memorial de incorporação antes da oferta ao público.","Seu núcleo axiológico é a proteção do adquirente e a boa-fé objetiva."]},
+{d:"Registro de Imóveis", n:"Loteamento", intro:["O loteamento é a forma de parcelamento do solo urbano com abertura de vias,","regido pela Lei n. 6.766/1979,","que subdivide a gleba em lotes, mediante registro do projeto aprovado pelo Município.","Seu núcleo axiológico é a ordenação urbana e a função social da propriedade."]},
+{d:"Registro de Imóveis", n:"Condomínio Edilício", intro:["O condomínio edilício é a propriedade simultânea de unidades autônomas e áreas comuns,","regido pelos arts. 1.331 e ss. do Código Civil e pela Lei n. 4.591/1964,","instituído por registro da convenção, com frações ideais individualizadas.","Seu núcleo axiológico é a função social e a convivência condominial."]},
+{d:"Registro de Imóveis", n:"Patrimônio de Afetação", intro:["O patrimônio de afetação é a segregação do acervo de uma incorporação,","previsto nos arts. 31-A e ss. da Lei n. 4.591/1964 (Lei n. 10.931/2004),","que separa terreno e acessões dos demais bens do incorporador, protegendo os adquirentes.","Seu núcleo axiológico é a proteção do adquirente e a segurança do empreendimento."]},
+{d:"Registro de Imóveis", n:"Direito Real de Laje", intro:["O direito real de laje é a titularidade autônoma da superfície superior ou inferior de construção,","previsto nos arts. 1.510-A e ss. do Código Civil (Lei n. 13.465/2017),","que permite alienar e onerar a laje com matrícula própria, sem instituir condomínio.","Seu núcleo axiológico é a função social da propriedade e a moradia."]},
+{d:"Registro de Imóveis", n:"Bem de Família", intro:["O bem de família é o instituto que protege a moradia da entidade familiar contra a penhora,","nas modalidades legal (Lei n. 8.009/1990) e convencional (arts. 1.711 e ss. do Código Civil),","que resguarda o imóvel residencial e seus móveis das dívidas do titular.","Seu núcleo axiológico é a dignidade da pessoa humana e a proteção da família."]},
+{d:"Registro de Imóveis", n:"Servidão Predial", intro:["A servidão predial é o direito real que impõe encargo a um prédio em proveito de outro,","prevista nos arts. 1.378 e ss. do Código Civil,","constituída por registro no imóvel serviente, em favor do prédio dominante.","Seu núcleo axiológico é a função social e a utilidade recíproca dos prédios."]},
+{d:"Registro de Imóveis", n:"Direito de Superfície", intro:["O direito de superfície é o direito real de construir ou plantar em terreno alheio,","previsto nos arts. 1.369 e ss. do Código Civil e no Estatuto da Cidade,","que desdobra a propriedade, atribuindo ao superficiário o domínio da acessão.","Seu núcleo axiológico é a função social da propriedade e o aproveitamento do solo."]},
+{d:"Registro de Imóveis", n:"Usufruto", intro:["O usufruto é o direito real de usar e fruir coisa alheia,","previsto nos arts. 1.390 e ss. do Código Civil,","que atribui ao usufrutuário a posse, o uso e a percepção dos frutos, conservada a substância.","Seu núcleo axiológico é a função social e a proteção do nu-proprietário."]},
+{d:"Registro de Imóveis", n:"Retificação de Registro", intro:["A retificação de registro é o procedimento que corrige inexatidão do assento imobiliário,","prevista nos arts. 212 e 213 da Lei n. 6.015/1973,","admitindo a via administrativa perante o registrador, de ofício ou a requerimento.","Seu núcleo axiológico é a verdade registral e a segurança jurídica."]},
+{d:"Registro de Imóveis", n:"Procedimento de Dúvida", intro:["A dúvida registral é o procedimento administrativo de natureza jurisdicional,","prevista nos arts. 198 e ss. da Lei n. 6.015/1973,","suscitada pelo registrador ao juízo competente quando recusa o título apresentado.","Seu núcleo axiológico é o princípio da legalidade e da qualificação registral."]},
+{d:"Registro de Imóveis", n:"Regularização Fundiária (REURB)", intro:["A regularização fundiária urbana (REURB) é o conjunto de medidas para titular núcleos informais,","disciplinada pela Lei n. 13.465/2017,","que incorpora os núcleos ao ordenamento e confere direito real aos ocupantes.","Seu núcleo axiológico é a função social da cidade e o direito à moradia."]},
+{d:"Registro de Imóveis", n:"Concentração na Matrícula", intro:["O princípio da concentração é a diretriz de reunir na matrícula todos os atos relevantes,","positivado pelo art. 54 da Lei n. 13.097/2015,","de modo que o que não constar da matrícula não é oponível ao terceiro de boa-fé.","Seu núcleo axiológico é a segurança do tráfego jurídico e a boa-fé objetiva."]},
+{d:"Registro de Imóveis", n:"Georreferenciamento", intro:["O georreferenciamento é a descrição do imóvel rural por coordenadas geodésicas,","exigido pela Lei n. 10.267/2001 e regulado pela Lei n. 6.015/1973,","que vincula os limites do imóvel ao Sistema Geodésico Brasileiro, certificados pelo INCRA.","Seu núcleo axiológico é a especialidade objetiva e a segurança da cadeia dominial."]},
+{d:"Registro de Imóveis", n:"Adjudicação Compulsória", intro:["A adjudicação compulsória é a via que confere ao promissário comprador a propriedade,","prevista no art. 1.418 do Código Civil e, extrajudicialmente, no art. 216-B da Lei n. 6.015/1973,","que supre a recusa do promitente vendedor em outorgar a escritura definitiva.","Seu núcleo axiológico é a boa-fé e a efetividade do direito à propriedade."]},
+{d:"Registro de Imóveis", n:"Registro Torrens", intro:["O registro Torrens é o sistema facultativo de registro de imóvel rural com força definitiva,","previsto nos arts. 277 e ss. da Lei n. 6.015/1973,","que, após processo com contraditório, torna a propriedade praticamente inatacável.","Seu núcleo axiológico é a segurança jurídica absoluta do domínio."]},
+
+// ===================== RCPN =====================
+{d:"RCPN", n:"Registro de Nascimento", intro:["O registro de nascimento é o assento que dá existência jurídica à pessoa natural,","disciplinado pelos arts. 50 e ss. da Lei n. 6.015/1973,","que documenta o nascimento e atribui nome e filiação, com efeitos de estado.","Seu núcleo axiológico é a dignidade da pessoa e o direito à identidade."]},
+{d:"RCPN", n:"Registro de Óbito", intro:["O registro de óbito é o assento que documenta a morte da pessoa natural,","disciplinado pelos arts. 77 e ss. da Lei n. 6.015/1973,","que autoriza o sepultamento e produz efeitos sucessórios, previdenciários e civis.","Seu núcleo axiológico é a segurança jurídica do estado das pessoas."]},
+{d:"RCPN", n:"Registro de Casamento", intro:["O registro de casamento é o assento da união conjugal formalmente celebrada,","previsto nos arts. 70 e ss. da Lei n. 6.015/1973 e nos arts. 1.511 e ss. do Código Civil,","que constitui a sociedade conjugal e fixa o regime de bens.","Seu núcleo axiológico é a proteção da família e a segurança do estado civil."]},
+{d:"RCPN", n:"Habilitação de Casamento", intro:["A habilitação de casamento é o procedimento prévio de verificação dos requisitos para casar,","prevista nos arts. 1.525 e ss. do Código Civil e no art. 67 da Lei n. 6.015/1973,","que, com publicação de proclamas e homologação, autoriza a celebração.","Seu núcleo axiológico é a legalidade e a proteção da higidez do vínculo."]},
+{d:"RCPN", n:"Reconhecimento de Paternidade", intro:["O reconhecimento de paternidade é o ato que estabelece o vínculo de filiação,","previsto nos arts. 1.607 e ss. do Código Civil e no Provimento n. 16/2012 do CNJ,","que pode dar-se voluntariamente perante o registrador, com efeitos retroativos.","Seu núcleo axiológico é a dignidade e o direito à identidade e à filiação."]},
+{d:"RCPN", n:"Divórcio (averbação)", intro:["O divórcio é a dissolução do vínculo conjugal,","previsto no art. 226, §6º, da Constituição e nos arts. 1.571 e ss. do Código Civil,","cuja averbação no assento de casamento restabelece o estado civil e cessa o regime de bens.","Seu núcleo axiológico é a autonomia da vontade e a dignidade da pessoa."]},
+{d:"RCPN", n:"Retificação de Registro Civil", intro:["A retificação de registro civil é a correção de erro ou inexatidão do assento,","prevista nos arts. 109 e 110 da Lei n. 6.015/1973,","admitindo a via administrativa perante o registrador para erros evidentes.","Seu núcleo axiológico é a verdade registral e a dignidade da pessoa."]},
+{d:"RCPN", n:"Emancipação", intro:["A emancipação é a antecipação da capacidade civil plena do menor,","prevista no art. 5º, parágrafo único, do Código Civil,","que, voluntária, judicial ou legal, cessa a incapacidade, mediante registro.","Seu núcleo axiológico é a autonomia e a proteção do incapaz."]},
+{d:"RCPN", n:"Curatela / Interdição", intro:["A curatela é a medida protetiva de administração dos interesses de quem não pode reger-se,","prevista nos arts. 1.767 e ss. do Código Civil e no Estatuto da Pessoa com Deficiência,","que, decretada judicialmente, é averbada e delimita os atos sujeitos a assistência.","Seu núcleo axiológico é a dignidade e a proteção da pessoa vulnerável."]},
+{d:"RCPN", n:"Alteração de Nome", intro:["A alteração de nome é a modificação do prenome ou sobrenome no registro,","prevista nos arts. 56 e 57 da Lei n. 6.015/1973 (Lei n. 14.382/2022),","admitida, hoje, também extrajudicial e imotivadamente após a maioridade.","Seu núcleo axiológico é a autonomia e o direito à identidade pessoal."]},
+{d:"RCPN", n:"Alteração de Gênero", intro:["A alteração de gênero é a averbação da identidade de gênero da pessoa transgênero,","admitida pelo STF (ADI 4.275) e regulada pelo Provimento n. 73/2018 do CNJ,","que autoriza a mudança de prenome e sexo no registro, na via extrajudicial e sem cirurgia.","Seu núcleo axiológico é a dignidade e o livre desenvolvimento da personalidade."]},
+{d:"RCPN", n:"Registro Tardio de Nascimento", intro:["O registro tardio de nascimento é o assento realizado fora do prazo legal,","previsto nos arts. 46 e ss. da Lei n. 6.015/1973,","que, mediante requerimento e prova, assegura o registro a quem não o teve.","Seu núcleo axiológico é o direito à identidade e o combate ao sub-registro."]},
+{d:"RCPN", n:"Ausência", intro:["A ausência é a situação da pessoa desaparecida de seu domicílio, sem notícias,","prevista nos arts. 22 e ss. do Código Civil,","que, declarada judicialmente, autoriza a sucessão provisória e depois a definitiva.","Seu núcleo axiológico é a segurança jurídica e a proteção do patrimônio."]},
+{d:"RCPN", n:"União Estável (registro)", intro:["A união estável é a convivência pública, contínua e duradoura com objetivo de constituir família,","prevista no art. 226, §3º, da Constituição e nos arts. 1.723 e ss. do Código Civil,","cujo registro, facultativo, confere publicidade e segurança à relação.","Seu núcleo axiológico é a proteção da família e a autonomia da vontade."]},
+{d:"RCPN", n:"Multiparentalidade", intro:["A multiparentalidade é o reconhecimento simultâneo de vínculos socioafetivo e biológico,","admitida pelo STF no Tema 622 (RE 898.060),","que permite a coexistência de paternidades no registro, com todos os efeitos.","Seu núcleo axiológico é a dignidade e o melhor interesse da criança."]},
+
+// ===================== NOTAS =====================
+{d:"Notas", n:"Ata Notarial", intro:["A ata notarial é o instrumento público que documenta a existência e o modo de existir de um fato,","prevista no art. 384 do CPC e nos arts. 6º e 7º da Lei n. 8.935/1994,","pela qual o tabelião conserva prova pré-constituída, sem juízo de mérito.","Seu núcleo axiológico é a fé pública notarial."]},
+{d:"Notas", n:"Escritura de Compra e Venda", intro:["A escritura pública de compra e venda é o instrumento que formaliza a alienação onerosa de imóvel,","exigida pelo art. 108 do Código Civil e lavrada na forma do art. 215,","que constitui o título hábil ao registro e à transmissão da propriedade.","Seu núcleo axiológico é a segurança jurídica e a forma."]},
+{d:"Notas", n:"Escritura de Doação", intro:["A doação é o contrato pelo qual alguém transfere gratuitamente bens ou vantagens,","prevista nos arts. 538 e ss. do Código Civil,","que, quanto a imóveis, exige escritura pública, respeitada a legítima.","Seu núcleo axiológico é a autonomia da vontade e a proteção dos herdeiros necessários."]},
+{d:"Notas", n:"Inventário e Partilha Extrajudicial", intro:["O inventário extrajudicial é o procedimento de apuração e divisão da herança por escritura,","previsto no art. 610, §1º, do CPC (Lei n. 11.441/2007),","admitido quando há consenso, capazes os herdeiros e ausente testamento (com as exceções do CNJ).","Seu núcleo axiológico é a desjudicialização e a autonomia da vontade."]},
+{d:"Notas", n:"Divórcio Extrajudicial", intro:["O divórcio extrajudicial é a dissolução consensual do casamento por escritura pública,","prevista no art. 733 do CPC (Lei n. 11.441/2007),","admitida quando ausentes nascituro ou filhos incapazes, com assistência de advogado.","Seu núcleo axiológico é a autonomia da vontade e a desjudicialização."]},
+{d:"Notas", n:"Testamento Público", intro:["O testamento público é o ato de última vontade lavrado pelo tabelião,","previsto nos arts. 1.864 e ss. do Código Civil,","escrito conforme as declarações do testador, na presença de duas testemunhas.","Seu núcleo axiológico é a autonomia da vontade e a segurança da disposição."]},
+{d:"Notas", n:"Procuração Pública", intro:["A procuração pública é o instrumento de mandato lavrado por tabelião,","prevista nos arts. 653 e ss. do Código Civil e no art. 657,","que confere poderes de representação, exigida a mesma forma do ato a ser praticado.","Seu núcleo axiológico é a segurança jurídica e a fé pública."]},
+{d:"Notas", n:"Reconhecimento de Firma", intro:["O reconhecimento de firma é o ato pelo qual o tabelião atesta a autenticidade de assinatura,","previsto no art. 7º, III, da Lei n. 8.935/1994 e no Código Nacional de Normas do CNJ,","nas modalidades por autenticidade (presencial) ou por semelhança (padrão de firma).","Seu núcleo axiológico é a fé pública e a segurança do tráfego jurídico."]},
+{d:"Notas", n:"Autenticação de Cópia", intro:["A autenticação é o ato que atesta a conformidade da cópia com o documento original,","prevista no art. 7º, V, da Lei n. 8.935/1994,","pela qual o tabelião confere fé pública à reprodução apresentada.","Seu núcleo axiológico é a fé pública e a segurança documental."]},
+{d:"Notas", n:"Escritura de União Estável", intro:["A escritura de união estável é o instrumento que declara e disciplina a convivência familiar,","fundada no art. 1.725 do Código Civil,","pela qual os conviventes fixam a existência da união e o regime de bens.","Seu núcleo axiológico é a autonomia da vontade e a segurança jurídica da família."]},
+{d:"Notas", n:"Pacto Antenupcial", intro:["O pacto antenupcial é a convenção pela qual os nubentes escolhem regime de bens diverso do legal,","previsto nos arts. 1.653 e ss. do Código Civil,","lavrado por escritura pública, sob condição de o casamento realizar-se.","Seu núcleo axiológico é a autonomia da vontade e a proteção de terceiros."]},
+{d:"Notas", n:"Apostila de Haia", intro:["A apostila é a certificação que autentica documento público para uso no exterior,","instituída pela Convenção da Haia de 1961 e regulada pelo CNJ,","que dispensa a legalização consular entre os países signatários.","Seu núcleo axiológico é a segurança jurídica e a cooperação internacional."]},
+{d:"Notas", n:"Escritura de Permuta", intro:["A permuta é o contrato de troca de bens entre as partes,","prevista no art. 533 do Código Civil,","que, quanto a imóveis, exige escritura pública e submete-se às regras da compra e venda.","Seu núcleo axiológico é a autonomia da vontade e a segurança jurídica."]},
+{d:"Notas", n:"Escritura de Dação em Pagamento", intro:["A dação em pagamento é a entrega de coisa diversa da devida, com anuência do credor,","prevista nos arts. 356 e ss. do Código Civil,","que extingue a obrigação e, sendo imóvel, exige escritura pública e registro.","Seu núcleo axiológico é a autonomia da vontade e a satisfação do crédito."]},
+{d:"Notas", n:"Escritura de Cessão de Direitos", intro:["A cessão de direitos é a transferência de posição jurídica ou de direitos aquisitivos,","fundada nos arts. 286 e ss. do Código Civil,","que, sobre direitos imobiliários, lavra-se por escritura pública e registra-se.","Seu núcleo axiológico é a segurança jurídica e a boa-fé."]},
+{d:"Notas", n:"Escritura de Confissão de Dívida", intro:["A confissão de dívida é o reconhecimento formal de obrigação pecuniária,","fundada na autonomia privada e nos arts. 389 e ss. do Código Civil,","que, lavrada por escritura pública, constitui título executivo extrajudicial.","Seu núcleo axiológico é a segurança do crédito e a boa-fé."]},
+{d:"Notas", n:"Ata Notarial para Usucapião", intro:["A ata notarial para usucapião é o instrumento que atesta o tempo e as características da posse,","exigida pelo art. 216-A, I, da Lei n. 6.015/1973,","que instrui o pedido extrajudicial com a constatação notarial dos fatos possessórios.","Seu núcleo axiológico é a fé pública e a segurança do procedimento registral."]},
+{d:"Notas", n:"Testamento Cerrado", intro:["O testamento cerrado é o ato de última vontade escrito e mantido em sigilo,","previsto nos arts. 1.868 e ss. do Código Civil,","aprovado pelo tabelião em auto de aprovação, sem conhecer-lhe o conteúdo.","Seu núcleo axiológico é a autonomia da vontade e o sigilo da disposição."]},
+
+// ===================== RTD =====================
+{d:"RTD", n:"Registro de Títulos e Documentos", intro:["O registro de títulos e documentos é a serventia de atribuição residual e de conservação,","disciplinado pelos arts. 127 e ss. da Lei n. 6.015/1973,","que confere publicidade, autenticidade e eficácia contra terceiros a atos e documentos.","Seu núcleo axiológico é a publicidade e a segurança do tráfego jurídico."]},
+{d:"RTD", n:"Notificação Extrajudicial", intro:["A notificação extrajudicial é o ato de dar ciência formal a alguém de uma manifestação de vontade,","prevista no art. 160 da Lei n. 6.015/1973,","pela qual o registrador documenta a comunicação e seus efeitos (mora, resolução, etc.).","Seu núcleo axiológico é a segurança jurídica e a boa-fé."]},
+{d:"RTD", n:"Registro de Contrato (eficácia erga omnes)", intro:["O registro de contrato no RTD é o ato que confere oponibilidade a terceiros,","previsto no art. 129 da Lei n. 6.015/1973,","de modo que o instrumento particular passe a produzir efeitos contra terceiros.","Seu núcleo axiológico é a publicidade e a segurança do crédito."]},
+{d:"RTD", n:"Cessão de Crédito", intro:["A cessão de crédito é a transferência da titularidade do crédito a terceiro,","prevista nos arts. 286 e ss. do Código Civil,","que, para valer contra o devedor e terceiros, exige notificação e registro no RTD.","Seu núcleo axiológico é a publicidade e a segurança do tráfego jurídico."]},
+{d:"RTD", n:"Penhor Comum", intro:["O penhor é o direito real de garantia sobre coisa móvel,","previsto nos arts. 1.431 e ss. do Código Civil,","que, com a tradição do bem, assegura o crédito, registrado no RTD.","Seu núcleo axiológico é a segurança do crédito e a publicidade."]},
+{d:"RTD", n:"Alienação Fiduciária de Móvel", intro:["A alienação fiduciária de coisa móvel é a garantia com transferência da propriedade resolúvel,","prevista no Decreto-Lei n. 911/1969 e nos arts. 1.361 e ss. do Código Civil,","que se constitui pelo registro do contrato, mantida a posse direta com o devedor.","Seu núcleo axiológico é a segurança do crédito e a publicidade registral."]},
+
+// ===================== RCPJ =====================
+{d:"RCPJ", n:"Registro Civil de Pessoas Jurídicas", intro:["O registro civil de pessoas jurídicas é a serventia que confere personalidade a entes não empresariais,","disciplinado pelos arts. 114 e ss. da Lei n. 6.015/1973,","que registra atos constitutivos de associações, fundações, sociedades simples e afins.","Seu núcleo axiológico é a publicidade e a segurança jurídica."]},
+{d:"RCPJ", n:"Associação", intro:["A associação é a união de pessoas para fins não econômicos,","prevista nos arts. 53 e ss. do Código Civil,","que adquire personalidade jurídica com o registro do estatuto no RCPJ.","Seu núcleo axiológico é a liberdade de associação e a autonomia privada."]},
+{d:"RCPJ", n:"Fundação", intro:["A fundação é a personificação de um patrimônio afetado a fim determinado,","prevista nos arts. 62 e ss. do Código Civil,","constituída por dotação, com estatuto velado pelo Ministério Público, e registrada.","Seu núcleo axiológico é a preservação da vontade do instituidor e o fim social."]},
+{d:"RCPJ", n:"Sociedade Simples", intro:["A sociedade simples é a sociedade de fins econômicos sem caráter empresarial,","prevista nos arts. 997 e ss. do Código Civil,","que adquire personalidade com o registro do contrato social no RCPJ.","Seu núcleo axiológico é a autonomia privada e a segurança jurídica."]},
+{d:"RCPJ", n:"Organização Religiosa", intro:["A organização religiosa é a pessoa jurídica de direito privado voltada ao culto,","prevista no art. 44, IV e §1º, do Código Civil,","dotada de ampla liberdade de organização, registrada no RCPJ.","Seu núcleo axiológico é a liberdade religiosa e a autonomia confessional."]},
+
+// ===================== PROTESTO =====================
+{d:"Protesto", n:"Protesto de Títulos", intro:["O protesto é o ato formal e solene que prova a inadimplência e o descumprimento de obrigação,","disciplinado pela Lei n. 9.492/1997,","que documenta a falta de pagamento de título ou outro documento de dívida.","Seu núcleo axiológico é a publicidade e a segurança do crédito."]},
+{d:"Protesto", n:"Intimação no Protesto", intro:["A intimação é o ato que dá ciência ao devedor da apresentação do título a protesto,","prevista no art. 14 da Lei n. 9.492/1997,","realizada no endereço fornecido pelo apresentante e, frustrada a pessoal, por edital.","Seu núcleo axiológico é o contraditório e a segurança do procedimento."]},
+{d:"Protesto", n:"Cancelamento de Protesto", intro:["O cancelamento de protesto é a baixa definitiva do registro após a satisfação da dívida,","previsto no art. 26 da Lei n. 9.492/1997,","efetuado à vista do documento protestado ou de anuência do credor.","Seu núcleo axiológico é a boa-fé e a proteção do nome do devedor."]},
+{d:"Protesto", n:"Protesto de CDA", intro:["O protesto de certidão de dívida ativa é o protesto do crédito público inscrito,","admitido pelo art. 1º, parágrafo único, da Lei n. 9.492/1997 e chancelado pelo STF (ADI 5.135),","que confere publicidade à inadimplência tributária e não tributária do ente público.","Seu núcleo axiológico é a eficiência e a recuperação do crédito público."]},
+{d:"Protesto", n:"Sustação de Protesto", intro:["A sustação de protesto é a medida que suspende a lavratura ou os efeitos do protesto,","prevista no art. 17 da Lei n. 9.492/1997,","determinada judicialmente, mantendo o título retido até ulterior deliberação.","Seu núcleo axiológico é a tutela jurisdicional e a proteção contra o abuso."]},
+{d:"Protesto", n:"Anuência / Quitação no Protesto", intro:["A anuência é a manifestação do credor que autoriza o cancelamento do protesto,","fundada no art. 26, §1º, da Lei n. 9.492/1997,","que, à falta do título original, viabiliza a baixa mediante declaração do apresentante.","Seu núcleo axiológico é a boa-fé e a segurança do procedimento."]},
+
+// ===================== CIVIL =====================
+{d:"Civil", n:"Negócio Jurídico", intro:["O negócio jurídico é a manifestação de vontade destinada a produzir efeitos queridos,","disciplinado pelos arts. 104 e ss. do Código Civil,","cuja validade depende de agente capaz, objeto lícito e forma prescrita ou não defesa.","Seu núcleo axiológico é a autonomia privada e a boa-fé objetiva."]},
+{d:"Civil", n:"Prescrição", intro:["A prescrição é a perda da pretensão pelo decurso do tempo,","prevista nos arts. 189 e ss. do Código Civil,","que extingue a exigibilidade do direito violado ante a inércia do titular.","Seu núcleo axiológico é a segurança jurídica e a estabilidade das relações."]},
+{d:"Civil", n:"Decadência", intro:["A decadência é a extinção do próprio direito potestativo pelo decurso do prazo,","prevista nos arts. 207 e ss. do Código Civil,","que fulmina o direito não exercido no tempo legal ou convencional.","Seu núcleo axiológico é a segurança jurídica e a certeza das situações."]},
+{d:"Civil", n:"Posse", intro:["A posse é o exercício, de fato, de algum dos poderes inerentes à propriedade,","prevista nos arts. 1.196 e ss. do Código Civil,","protegida por si mesma, independentemente do domínio, pelos interditos possessórios.","Seu núcleo axiológico é a função social da posse e a paz social."]},
+{d:"Civil", n:"Propriedade", intro:["A propriedade é o direito de usar, gozar, dispor e reaver a coisa,","prevista no art. 1.228 do Código Civil e no art. 5º, XXII e XXIII, da Constituição,","que confere ao titular o domínio, condicionado ao cumprimento de sua função social.","Seu núcleo axiológico é a função social da propriedade."]},
+{d:"Civil", n:"Contrato", intro:["O contrato é o acordo de vontades que cria, modifica ou extingue relações patrimoniais,","disciplinado pelos arts. 421 e ss. do Código Civil,","cuja liberdade de contratar exerce-se nos limites da função social do contrato.","Seu núcleo axiológico é a autonomia privada e a boa-fé objetiva."]},
+{d:"Civil", n:"Responsabilidade Civil", intro:["A responsabilidade civil é o dever de reparar o dano causado a outrem,","prevista nos arts. 186, 187 e 927 do Código Civil,","que impõe a indenização por ato ilícito, nas modalidades subjetiva e objetiva.","Seu núcleo axiológico é a reparação integral e a solidariedade social."]},
+{d:"Civil", n:"Direitos da Personalidade", intro:["Os direitos da personalidade são os atributos essenciais e inatos da pessoa,","previstos nos arts. 11 e ss. do Código Civil e no art. 5º da Constituição,","que tutelam a vida, o nome, a imagem, a honra e a intimidade, em regra irrenunciáveis.","Seu núcleo axiológico é a dignidade da pessoa humana."]},
+{d:"Civil", n:"Capacidade Civil", intro:["A capacidade civil é a aptidão para exercer, por si, os atos da vida civil,","prevista nos arts. 3º a 5º do Código Civil, alterados pela Lei n. 13.146/2015,","que hoje reserva a incapacidade absoluta aos menores de dezesseis anos.","Seu núcleo axiológico é a dignidade e a inclusão da pessoa com deficiência."]},
+{d:"Civil", n:"Casamento", intro:["O casamento é a união solene entre duas pessoas para constituir comunhão plena de vida,","previsto no art. 226 da Constituição e nos arts. 1.511 e ss. do Código Civil,","que estabelece a sociedade conjugal, com deveres recíprocos e regime de bens.","Seu núcleo axiológico é a proteção da família e a igualdade dos cônjuges."]},
+{d:"Civil", n:"Regime de Bens", intro:["O regime de bens é o estatuto patrimonial que disciplina as relações econômicas entre cônjuges,","previsto nos arts. 1.639 e ss. do Código Civil,","que se elege por pacto antenupcial, sendo o legal supletivo a comunhão parcial.","Seu núcleo axiológico é a autonomia da vontade e a proteção do consorte."]},
+{d:"Civil", n:"União Estável (civil)", intro:["A união estável é a entidade familiar formada pela convivência duradoura e pública,","reconhecida pelo art. 226, §3º, da Constituição e pelos arts. 1.723 e ss. do Código Civil,","que gera efeitos pessoais e patrimoniais equiparados, em regra, ao casamento.","Seu núcleo axiológico é a proteção da família e a dignidade da pessoa."]},
+{d:"Civil", n:"Sucessão Legítima", intro:["A sucessão legítima é a transmissão da herança segundo a ordem de vocação da lei,","prevista nos arts. 1.829 e ss. do Código Civil,","que defere os bens aos herdeiros na falta ou insuficiência de testamento.","Seu núcleo axiológico é a proteção da família e a solidariedade sucessória."]},
+{d:"Civil", n:"Sucessão Testamentária", intro:["A sucessão testamentária é a transmissão de bens conforme a vontade manifestada em testamento,","prevista nos arts. 1.857 e ss. do Código Civil,","que respeita a legítima dos herdeiros necessários, disponível a metade do acervo.","Seu núcleo axiológico é a autonomia da vontade e a proteção da legítima."]},
+{d:"Civil", n:"Direito das Sucessões", intro:["O direito das sucessões é o ramo que regula a transmissão do patrimônio por morte,","disciplinado pelos arts. 1.784 e ss. do Código Civil,","regido pelo princípio de saisine, pelo qual a herança se transmite desde a abertura.","Seu núcleo axiológico é a continuidade patrimonial e a proteção da família."]},
+{d:"Civil", n:"Alimentos", intro:["Os alimentos são a prestação destinada a suprir as necessidades vitais de quem não pode prover-se,","previstos nos arts. 1.694 e ss. do Código Civil,","fixados na proporção da necessidade do reclamante e da possibilidade do obrigado.","Seu núcleo axiológico é a dignidade da pessoa e a solidariedade familiar."]},
+{d:"Civil", n:"Doação (civil)", intro:["A doação é o contrato gratuito de transferência de bens do doador ao donatário,","prevista nos arts. 538 e ss. do Código Civil,","que não pode exceder a parte disponível nem privar o doador do mínimo existencial.","Seu núcleo axiológico é a autonomia da vontade e a proteção da legítima."]},
+
+// ===================== EMPRESARIAL =====================
+{d:"Empresarial", n:"Recuperação Judicial", intro:["A recuperação judicial é o instituto que viabiliza a superação da crise do devedor empresário,","disciplinada pela Lei n. 11.101/2005,","a fim de manter a fonte produtora, o emprego e os interesses dos credores.","Seu núcleo axiológico é a preservação da empresa e sua função social (art. 47)."]},
+{d:"Empresarial", n:"Falência", intro:["A falência é o processo de execução concursal do devedor empresário insolvente,","disciplinada pela Lei n. 11.101/2005,","que afasta o falido, arrecada e liquida os bens para pagamento coletivo dos credores.","Seu núcleo axiológico é a par conditio creditorum e a otimização dos ativos."]},
+{d:"Empresarial", n:"Recuperação Extrajudicial", intro:["A recuperação extrajudicial é o acordo do devedor com credores, homologado em juízo,","prevista nos arts. 161 e ss. da Lei n. 11.101/2005,","que permite renegociar dívidas sem o processo judicial pleno de recuperação.","Seu núcleo axiológico é a preservação da empresa e a autonomia negocial."]},
+{d:"Empresarial", n:"Sociedade Limitada", intro:["A sociedade limitada é o tipo societário de responsabilidade restrita ao capital,","prevista nos arts. 1.052 e ss. do Código Civil,","na qual os sócios respondem, solidariamente, pela integralização do capital social.","Seu núcleo axiológico é a autonomia privada e a limitação do risco empresarial."]},
+{d:"Empresarial", n:"Sociedade Anônima", intro:["A sociedade anônima é a companhia de capital dividido em ações,","regida pela Lei n. 6.404/1976,","na qual a responsabilidade do acionista limita-se ao preço das ações subscritas.","Seu núcleo axiológico é a captação de recursos e a segurança do investidor."]},
+{d:"Empresarial", n:"Nome Empresarial", intro:["O nome empresarial é o sinal que identifica o empresário no exercício da atividade,","previsto nos arts. 1.155 e ss. do Código Civil,","que abrange a firma e a denominação, protegido pelo registro no órgão competente.","Seu núcleo axiológico é a proteção da identidade e da clientela."]},
+{d:"Empresarial", n:"Estabelecimento Empresarial", intro:["O estabelecimento é o complexo de bens organizado para o exercício da empresa,","previsto nos arts. 1.142 e ss. do Código Civil,","que pode ser objeto unitário de negócios, como o trespasse.","Seu núcleo axiológico é a preservação da atividade e a proteção do adquirente."]},
+{d:"Empresarial", n:"Título de Crédito", intro:["O título de crédito é o documento necessário ao exercício do direito literal e autônomo nele contido,","conceituado no art. 887 do Código Civil e na legislação especial,","que circula com autonomia, abstração e cartularidade.","Seu núcleo axiológico é a segurança e a celeridade da circulação do crédito."]},
+{d:"Empresarial", n:"Duplicata", intro:["A duplicata é o título de crédito causal ligado à compra e venda mercantil ou à prestação de serviço,","regida pela Lei n. 5.474/1968 e, na forma eletrônica, pela Lei n. 13.775/2018,","emitida a partir da fatura, com aceite e possibilidade de protesto por indicação.","Seu núcleo axiológico é a segurança do crédito e a circulação cambial."]},
+{d:"Empresarial", n:"Cheque", intro:["O cheque é a ordem de pagamento à vista sacada contra instituição financeira,","regido pela Lei n. 7.357/1985,","que consubstancia título de crédito não sujeito a aceite, pagável à apresentação.","Seu núcleo axiológico é a segurança e a liquidez do meio de pagamento."]},
+
+// ===================== CONSTITUCIONAL =====================
+{d:"Constitucional", n:"Mandado de Segurança", intro:["O mandado de segurança é a ação constitucional que protege direito líquido e certo,","previsto no art. 5º, LXIX, da Constituição e na Lei n. 12.016/2009,","não amparado por habeas corpus ou data, contra ilegalidade ou abuso de autoridade.","Seu núcleo axiológico é a inafastabilidade da jurisdição."]},
+{d:"Constitucional", n:"Habeas Corpus", intro:["O habeas corpus é a ação constitucional que tutela a liberdade de locomoção,","previsto no art. 5º, LXVIII, da Constituição,","cabível contra coação ou ameaça, por ilegalidade ou abuso de poder.","Seu núcleo axiológico é a liberdade de locomoção e a dignidade da pessoa."]},
+{d:"Constitucional", n:"Habeas Data", intro:["O habeas data é a ação constitucional de acesso e retificação de informações pessoais,","previsto no art. 5º, LXXII, da Constituição e na Lei n. 9.507/1997,","que assegura conhecer e corrigir dados constantes de registros públicos ou de caráter público.","Seu núcleo axiológico é a autodeterminação informativa e a dignidade."]},
+{d:"Constitucional", n:"Mandado de Injunção", intro:["O mandado de injunção é a ação que supre a falta de norma regulamentadora,","previsto no art. 5º, LXXI, da Constituição e na Lei n. 13.300/2016,","que viabiliza o exercício de direitos inviabilizados por omissão legislativa.","Seu núcleo axiológico é a efetividade dos direitos fundamentais."]},
+{d:"Constitucional", n:"Ação Popular", intro:["A ação popular é o instrumento de tutela do patrimônio público pelo cidadão,","prevista no art. 5º, LXXIII, da Constituição e na Lei n. 4.717/1965,","que anula ato lesivo ao erário, à moralidade, ao meio ambiente ou ao patrimônio cultural.","Seu núcleo axiológico é a soberania popular e a moralidade administrativa."]},
+{d:"Constitucional", n:"Controle de Constitucionalidade", intro:["O controle de constitucionalidade é o mecanismo de aferição da compatibilidade das normas com a Constituição,","previsto nos arts. 102 e 103 da Constituição,","exercido nas vias difusa e concentrada, para preservar a supremacia constitucional.","Seu núcleo axiológico é a supremacia e a rigidez da Constituição."]},
+{d:"Constitucional", n:"Direitos e Garantias Fundamentais", intro:["Os direitos fundamentais são as posições jurídicas essenciais reconhecidas à pessoa,","previstos no art. 5º e ss. da Constituição,","que vinculam o Estado e os particulares, com aplicabilidade imediata.","Seu núcleo axiológico é a dignidade da pessoa humana."]},
+{d:"Constitucional", n:"Serviços Notariais e de Registro", intro:["Os serviços notariais e de registro são atividades públicas exercidas em caráter privado,","previstos no art. 236 da Constituição e na Lei n. 8.935/1994,","por delegação do Poder Público, mediante concurso de provas e títulos.","Seu núcleo axiológico é a fé pública e a segurança jurídica."]},
+
+// ===================== ADMINISTRATIVO =====================
+{d:"Administrativo", n:"Ato Administrativo", intro:["O ato administrativo é a manifestação unilateral da Administração que produz efeitos jurídicos,","fundado nos princípios do art. 37 da Constituição e na doutrina administrativista,","dotado de presunção de legitimidade, imperatividade e autoexecutoriedade.","Seu núcleo axiológico é a legalidade e o interesse público."]},
+{d:"Administrativo", n:"Poder de Polícia", intro:["O poder de polícia é a prerrogativa de condicionar e limitar direitos em prol da coletividade,","conceituado no art. 78 do Código Tributário Nacional,","que restringe o exercício de liberdades e da propriedade em favor do interesse público.","Seu núcleo axiológico é a supremacia do interesse público."]},
+{d:"Administrativo", n:"Licitação", intro:["A licitação é o procedimento que seleciona a proposta mais vantajosa para a Administração,","regida pela Lei n. 14.133/2021,","que assegura isonomia entre os concorrentes e a contratação eficiente.","Seu núcleo axiológico é a isonomia, a moralidade e a eficiência."]},
+{d:"Administrativo", n:"Contrato Administrativo", intro:["O contrato administrativo é o ajuste firmado pela Administração sob regime de direito público,","regido pela Lei n. 14.133/2021,","marcado pelas cláusulas exorbitantes que colocam a Administração em posição de supremacia.","Seu núcleo axiológico é o interesse público e a continuidade do serviço."]},
+{d:"Administrativo", n:"Improbidade Administrativa", intro:["A improbidade administrativa é o ilícito civil qualificado pela desonestidade do agente público,","prevista no art. 37, §4º, da Constituição e na Lei n. 8.429/1992 (Lei n. 14.230/2021),","que hoje exige dolo específico, excluída a modalidade culposa.","Seu núcleo axiológico é a moralidade administrativa."]},
+{d:"Administrativo", n:"Responsabilidade Civil do Estado", intro:["A responsabilidade civil do Estado é o dever de reparar danos causados a terceiros por seus agentes,","prevista no art. 37, §6º, da Constituição,","fundada, em regra, na teoria do risco administrativo, de natureza objetiva.","Seu núcleo axiológico é a solidariedade social e a repartição dos ônus públicos."]},
+{d:"Administrativo", n:"Serviço Público", intro:["O serviço público é a atividade prestada pela Administração para satisfazer necessidades coletivas,","fundado no art. 175 da Constituição,","prestado diretamente ou por delegação, sob regime jurídico de direito público.","Seu núcleo axiológico é a continuidade e a universalidade do serviço."]},
+{d:"Administrativo", n:"Fiscalização dos Serviços Extrajudiciais", intro:["A fiscalização dos serviços extrajudiciais é o controle estatal sobre os delegatários,","prevista nos arts. 37 e 38 da Lei n. 8.935/1994 e no art. 236, §1º, da Constituição,","exercida pelo Poder Judiciário, que pode aplicar sanções ao notário e registrador.","Seu núcleo axiológico é a fé pública e a eficiência do serviço delegado."]},
+
+// ===================== TRIBUTÁRIO =====================
+{d:"Tributário", n:"ITBI", intro:["O ITBI é o imposto sobre a transmissão inter vivos, a título oneroso, de bens imóveis,","previsto no art. 156, II, da Constituição e no Código Tributário Nacional,","cujo fato gerador é a transmissão da propriedade, condição para o registro.","Seu núcleo axiológico é a capacidade contributiva e a legalidade tributária."]},
+{d:"Tributário", n:"ITCMD", intro:["O ITCMD é o imposto sobre a transmissão causa mortis e a doação de quaisquer bens,","previsto no art. 155, I, da Constituição,","cujo fato gerador é a transmissão gratuita, exigível no inventário e na doação.","Seu núcleo axiológico é a capacidade contributiva e a legalidade tributária."]},
+{d:"Tributário", n:"Imunidade Tributária", intro:["A imunidade tributária é a limitação constitucional ao poder de tributar,","prevista no art. 150, VI, da Constituição,","que afasta a incidência sobre pessoas e bens protegidos por valores caros à ordem constitucional.","Seu núcleo axiológico é a proteção de direitos fundamentais e do pacto federativo."]},
+{d:"Tributário", n:"Obrigação Tributária", intro:["A obrigação tributária é o vínculo que une o Estado credor ao sujeito passivo,","prevista nos arts. 113 e ss. do Código Tributário Nacional,","que nasce com o fato gerador e desdobra-se em principal e acessória.","Seu núcleo axiológico é a legalidade e a segurança jurídica tributária."]},
+
+// ===================== OUTROS =====================
+{d:"Outros", n:"Jurisdição Voluntária", intro:["A jurisdição voluntária é a administração pública de interesses privados pelo juiz,","prevista nos arts. 719 e ss. do CPC,","na qual não há lide, mas homologação ou integração de negócios de interesse dos particulares.","Seu núcleo axiológico é a proteção de interesses privados relevantes."]},
+{d:"Outros", n:"LGPD nos Serviços Registrais", intro:["A proteção de dados nos serviços registrais é a disciplina do tratamento de dados pessoais pelos cartórios,","fundada na Lei n. 13.709/2018 (LGPD) e nas normas do CNJ,","que compatibiliza a publicidade registral com a tutela da privacidade do titular.","Seu núcleo axiológico é a autodeterminação informativa e a segurança jurídica."]}
+];
+
+const DISCS=["Registro de Imóveis","RCPN","Notas","RTD","RCPJ","Protesto","Civil","Empresarial","Constitucional","Administrativo","Tributário","Outros"];
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");}
+const NUM=["① NOME + GÊNERO","② SEDE LEGAL","③ FUNÇÃO","④ PRINCÍPIO"], C=["c1","c2","c3","c4"];
+function introHTML(a){ return a.map((t,i)=>`<span class="tg ${C[i]}">${NUM[i]}</span>${esc(t)} `).join(""); }
+
+const root=document.getElementById("root");
+let n=0;
+T.forEach((o,i)=>o._i=i);
+DISCS.forEach(dc=>{
+  const items=T.filter(o=>o.d===dc);
+  if(!items.length) return;
+  const h=document.createElement("div"); h.className="disc-h"; h.dataset.disc=dc;
+  h.innerHTML=`${esc(dc)} <span class="cnt">· ${items.length}</span>`;
+  root.appendChild(h);
+  const list=document.createElement("div"); list.className="list"; list.dataset.disc=dc;
+  items.forEach(o=>{
+    n++;
+    const card=document.createElement("div"); card.className="card";
+    card.dataset.disc=o.d; card.dataset.txt=norm(o.n+" "+o.intro.join(" "));
+    card.innerHTML=`
+      <button class="head" aria-expanded="false">
+        <span class="num">${o._i+1}</span>
+        <span class="disc">${esc(o.d)}</span>
+        <span class="nm">${esc(o.n)}</span>
+        <span class="chev" aria-hidden="true">▸</span>
+      </button>
+      <div class="body"><div class="inner"><div class="pad">
+        <div class="sect">Introdução · fórmula mestra</div>
+        <p class="prose">${introHTML(o.intro)}</p>
+      </div></div></div>`;
+    list.appendChild(card);
+  });
+  root.appendChild(list);
+});
+
+const cards=[...document.querySelectorAll(".card")];
+const countEl=document.getElementById("count"), shownEl=document.getElementById("shown"), toggleAll=document.getElementById("toggleAll"), none=document.getElementById("none");
+
+function visibleCards(){ return cards.filter(c=>c.style.display!=="none"); }
+function refresh(){
+  const vis=visibleCards();
+  const open=vis.filter(c=>c.classList.contains("open")).length;
+  countEl.textContent=cards.filter(c=>c.classList.contains("open")).length;
+  shownEl.textContent=vis.length;
+  toggleAll.textContent=(open===vis.length&&vis.length)?"Recolher visíveis":"Revelar visíveis";
+}
+cards.forEach(c=>{ const h=c.querySelector(".head"); h.addEventListener("click",()=>{ const o=c.classList.toggle("open"); h.setAttribute("aria-expanded",o?"true":"false"); refresh(); }); });
+toggleAll.addEventListener("click",()=>{ const vis=visibleCards(); const open=vis.some(c=>!c.classList.contains("open")); vis.forEach(c=>{c.classList.toggle("open",open);c.querySelector(".head").setAttribute("aria-expanded",open?"true":"false");}); refresh(); });
+
+// filtros
+let activeDisc="", query="";
+const filters=document.getElementById("filters");
+function mkFilter(label,disc){ const b=document.createElement("button"); b.textContent=label; if(disc==="")b.classList.add("on"); b.dataset.disc=disc; b.addEventListener("click",()=>{ activeDisc=disc; [...filters.children].forEach(x=>x.classList.toggle("on",x.dataset.disc===disc)); apply(); }); return b; }
+filters.appendChild(mkFilter("Todas ("+T.length+")",""));
+DISCS.forEach(dc=>filters.appendChild(mkFilter(dc,dc)));
+
+function apply(){
+  cards.forEach(c=>{
+    const okD=!activeDisc||c.dataset.disc===activeDisc;
+    const okQ=!query||c.dataset.txt.includes(query);
+    c.style.display=(okD&&okQ)?"":"none";
+  });
+  document.querySelectorAll(".disc-h,.list").forEach(el=>{
+    const dc=el.dataset.disc;
+    const anyVis=cards.some(c=>c.dataset.disc===dc&&c.style.display!=="none");
+    el.style.display=anyVis?"":"none";
+  });
+  none.style.display=visibleCards().length?"none":"block";
+  refresh();
+}
+document.getElementById("q").addEventListener("input",e=>{ query=norm(e.target.value.trim()); apply(); });
+refresh();
+</script>

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>De candidato para candidato — toda redação da 2ª fase decora por fôrma</title>
+<style>
+  :root{
+    --bg:#eef1f4; --card:#ffffff; --ink:#17263b; --muted:#5c6b79; --line:#dbe3ea;
+    --gold:#b5820a; --spine:#c6d2dc;
+    --m1:#3b7dd8; --m2:#12876a; --m3:#a4551b; --m4:#7d3ac6;
+    --shadow:0 6px 22px rgba(20,40,60,.10);
+    --hf:"Cambria","Georgia",serif; --bf:"Calibri","Segoe UI",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0f151c; --card:#182430; --ink:#e8eef4; --muted:#9fb0be; --line:#2a3a48;
+      --gold:#e6b23e; --spine:#31465a; --shadow:0 6px 22px rgba(0,0,0,.35);
+      --m1:#5b9bf0; --m2:#2fb28c; --m3:#d98a45; --m4:#a874e6; }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--bf);
+    padding:34px 18px 70px;line-height:1.55;}
+  .wrap{max-width:860px;margin:0 auto;}
+
+  /* ---------- anúncio ---------- */
+  .card-ann{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);overflow:hidden;position:relative;}
+  .card-ann::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;
+    background:linear-gradient(90deg,var(--m1),var(--m2),var(--m3),var(--m4));}
+  .ann-pad{padding:30px 28px 26px;}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+    background:color-mix(in srgb,var(--gold) 13%,transparent);
+    border:1px solid color-mix(in srgb,var(--gold) 35%,var(--line));
+    border-radius:999px;padding:6px 13px;}
+  h1{font-family:var(--hf);font-size:clamp(25px,4.3vw,37px);line-height:1.12;
+    margin:15px 0 8px;text-wrap:balance;letter-spacing:.2px;}
+  .lead{color:var(--muted);font-size:16px;max-width:60ch;margin:0;}
+  .lead b{color:var(--ink);}
+  .ann-body{font-size:15.3px;max-width:64ch;margin:16px 0 0;}
+  .ann-body p{margin:11px 0;}
+  .ann-body .call{font-family:var(--hf);font-size:17px;color:var(--ink);
+    border-left:3px solid var(--gold);padding:2px 0 2px 14px;margin:18px 0;}
+
+  h2.sec{font-family:var(--hf);font-size:20px;margin:34px 0 4px;}
+  .sec-sub{color:var(--muted);font-size:13.5px;margin:0 0 16px;max-width:66ch;}
+
+  /* ---------- cadeia de fôrmas (a redação inteira) ---------- */
+  .chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:7px;margin:4px 0 8px;}
+  .clink{display:flex;align-items:center;gap:7px;}
+  .cchip{display:flex;flex-direction:column;gap:1px;padding:8px 11px;border-radius:10px;
+    border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);min-width:66px;
+    border-top:3px solid var(--cc);}
+  .cchip .ct{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--cc);}
+  .cchip .cn{font-size:12.5px;color:var(--muted);}
+  .carr{color:var(--muted);font-weight:700;align-self:center;}
+  .chain-note{font-size:13px;color:var(--muted);margin:8px 0 0;}
+  .chain-note b{color:var(--ink);}
+
+  /* ---------- demonstração (banca) ---------- */
+  .demo{margin-top:34px;background:var(--card);border:1px solid var(--line);
+    border-radius:18px;box-shadow:var(--shadow);overflow:hidden;}
+  .demo-top{padding:18px 20px 0;}
+  .demo-top .ttl{font-family:var(--hf);font-size:18px;margin:0 0 12px;}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;}
+  .tab{font-family:var(--bf);font-size:13.5px;font-weight:700;cursor:pointer;
+    border:1px solid var(--line);background:var(--card);color:var(--muted);
+    padding:9px 15px;border-radius:10px 10px 0 0;border-bottom:0;display:flex;gap:8px;align-items:center;}
+  .tab .tn{width:20px;height:20px;border-radius:6px;background:color-mix(in srgb,var(--tc) 16%,transparent);
+    color:var(--tc);font-family:var(--hf);font-weight:700;font-size:12px;
+    display:flex;align-items:center;justify-content:center;}
+  .tab.active{color:var(--ink);border-color:color-mix(in srgb,var(--tc) 55%,var(--line));
+    border-bottom:2px solid var(--card);position:relative;top:1px;background:var(--card);}
+  .tab.active .tn{background:var(--tc);color:#fff;}
+  button{font-family:var(--bf);cursor:pointer;}
+  .btn{font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--card);
+    color:var(--ink);padding:8px 15px;border-radius:9px;box-shadow:var(--shadow);}
+  .btn:hover{border-color:var(--gold);}
+  .btn.primary{background:var(--gold);border-color:var(--gold);color:#1a1204;}
+  button:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  .demo-pad{padding:18px 22px 24px;border-top:1px solid var(--line);}
+  .prompt{background:color-mix(in srgb,var(--ink) 5%,transparent);
+    border:1px solid var(--line);border-radius:13px;padding:14px 16px;display:flex;gap:13px;align-items:flex-start;}
+  .prompt .who{flex:none;width:40px;height:40px;border-radius:50%;
+    background:linear-gradient(135deg,var(--m4),var(--m1));color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;font-family:var(--hf);}
+  .prompt .say .lbl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+  .prompt .say .txt{font-family:var(--hf);font-size:16.5px;line-height:1.45;margin-top:2px;}
+  .prompt .say .txt b{color:var(--gold);}
+
+  .recall{margin:16px 0 4px;font-size:13.5px;color:var(--muted);}
+  .recall b{color:var(--ink);}
+
+  .steps{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+  .mstep{border:1px solid var(--line);border-radius:12px;overflow:hidden;border-left:4px solid var(--mc);}
+  .mstep .mhead{width:100%;text-align:left;background:none;border:0;
+    padding:12px 15px;display:flex;align-items:center;gap:12px;color:var(--ink);}
+  .mstep .mn{flex:none;width:28px;height:28px;border-radius:8px;background:var(--mc);
+    color:#fff;font-family:var(--hf);font-weight:700;font-size:15px;
+    display:flex;align-items:center;justify-content:center;}
+  .mstep .mlab{font-weight:800;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--mc);}
+  .mstep .msub{font-size:12px;color:var(--muted);font-weight:600;}
+  .mstep .mrow2{display:flex;flex-direction:column;gap:1px;}
+  .mstep .mtoggle{flex:none;margin-left:auto;font-size:12px;font-weight:700;color:var(--mc);
+    border:1px solid color-mix(in srgb,var(--mc) 40%,var(--line));border-radius:7px;
+    padding:4px 10px;background:color-mix(in srgb,var(--mc) 8%,transparent);}
+  .mstep .mbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s ease;}
+  .mstep.open .mbody{grid-template-rows:1fr;}
+  .mstep .mbody > i{overflow:hidden;min-height:0;font-style:normal;}
+  .mstep .mtext{font-family:var(--hf);font-size:15.5px;line-height:1.65;
+    padding:2px 15px 14px 55px;text-align:justify;}
+  .mstep.open .mtoggle{opacity:.5;}
+  .gatilho{display:block;margin-top:6px;font-family:var(--bf);font-size:12.3px;color:var(--muted);}
+  .gatilho b{color:var(--mc);font-weight:700;}
+
+  .assembled{margin-top:18px;border:1px dashed color-mix(in srgb,var(--gold) 45%,var(--line));
+    border-radius:13px;background:color-mix(in srgb,var(--gold) 7%,transparent);padding:15px 17px;}
+  .assembled .albl{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+    color:var(--gold);margin-bottom:7px;}
+  .assembled p{font-family:var(--hf);font-size:16px;line-height:1.72;text-align:justify;margin:0;}
+  .assembled .seg1{color:var(--m1);} .assembled .seg2{color:var(--m2);}
+  .assembled .seg3{color:var(--m3);} .assembled .seg4{color:var(--m4);}
+  .assembled.hidden{display:none;}
+
+  .safety{margin-top:16px;display:flex;gap:11px;align-items:flex-start;
+    font-size:13px;color:var(--muted);background:color-mix(in srgb,var(--m2) 8%,transparent);
+    border:1px solid color-mix(in srgb,var(--m2) 30%,var(--line));border-radius:11px;padding:12px 14px;}
+  .safety b{color:var(--ink);}
+  .safety .ic{flex:none;font-size:16px;}
+
+  footer{margin-top:34px;color:var(--muted);font-size:12.5px;text-align:center;line-height:1.7;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+  @media (max-width:560px){ .mstep .mtext{padding-left:15px;} .ann-pad{padding:24px 20px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== ANÚNCIO ===================== -->
+  <div class="card-ann">
+    <div class="ann-pad">
+      <span class="badge">◆ De candidato para candidato</span>
+      <h1>Toda redação da 2ª fase decora por fôrma. Não é sorte — é engenharia.</h1>
+      <p class="lead">Colega, a redação parece um bicho de sete cabeças, mas <b>ela inteira se monta com três fôrmas</b>. Você não decora o texto — decora a engenharia, e troca só o recheio conforme o instituto que cair.</p>
+
+      <div class="ann-body">
+        <p>São só três moldes: a <b>introdução</b> (4 movimentos), <b>cada quesito</b> do desenvolvimento (4 peças, sempre as mesmas) e a <b>conclusão</b> (4 movimentos de fechamento). O quesito repete quantas vezes o enunciado pedir. Do primeiro ao último parágrafo, é fôrma atrás de fôrma.</p>
+        <p class="call">"Não decore redações. Decore <b>três fôrmas de quatro peças</b>. Cai um instituto que você nunca viu? Você encaixa nas fôrmas e a redação sai inteira."</p>
+        <p>E dá pra treinar isso <b>falando</b>, na oral: o examinador manda "abra o instituto X" ou "desenvolva o quesito Y", e você responde na fôrma. O reflexo que monta a folha da 2ª fase é o mesmo que passa segurança na banca. Abaixo, a demonstração ao vivo das três fôrmas.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== A REDAÇÃO INTEIRA É UMA CADEIA DE FÔRMAS ===================== -->
+  <h2 class="sec">A redação inteira é uma cadeia de fôrmas</h2>
+  <p class="sec-sub">Exemplo real (Recuperação Judicial, 8 quesitos): cada bloco abaixo é um parágrafo — e cada parágrafo sai de uma das três fôrmas. Só muda o recheio.</p>
+  <div class="chain" id="chain"></div>
+  <p class="chain-note"><b>3 fôrmas · 1 introdução + N quesitos + 1 conclusão.</b> A do quesito é a que mais se repete — domine-a e você resolve o corpo de qualquer tema.</p>
+
+  <!-- ===================== DEMONSTRAÇÃO ===================== -->
+  <div class="demo">
+    <div class="demo-top">
+      <p class="ttl">Demonstração — as 3 fôrmas, a banca te cobrando</p>
+      <div class="tabs" id="tabs"></div>
+    </div>
+    <div class="demo-pad">
+      <div class="prompt">
+        <span class="who">FGV</span>
+        <span class="say">
+          <span class="lbl">Examinador</span>
+          <span class="txt" id="promptTxt">—</span>
+        </span>
+      </div>
+
+      <p class="recall"><b>Antes de revelar:</b> responda em voz alta encaixando as 4 peças da fôrma. Só então confira cada peça abaixo.</p>
+
+      <div class="steps" id="steps"></div>
+
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <button class="btn primary" id="revealAll">Revelar tudo</button>
+        <button class="btn" id="resetBtn">Ocultar / recomeçar</button>
+      </div>
+
+      <div class="assembled hidden" id="assembled">
+        <div class="albl" id="albl">Parágrafo montado — as 4 peças no lugar</div>
+        <p id="assembledText"></p>
+      </div>
+
+      <div class="safety">
+        <span class="ic">🛡️</span>
+        <span><b>Por que na oral.</b> Quem responde na fôrma soa firme — e segurança, no raio-x da banca, vale perto de um ponto na média. Treinar a fôrma falando é treinar conteúdo e postura de uma vez.</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Demonstração • As 3 fôrmas da redação da 2ª fase, treinadas em formato de prova oral • uso de estudo
+  </footer>
+</div>
+
+<script>
+/* ===== As 3 fôrmas. Cada peça: [símbolo, rótulo, papel, gatilho, texto-exemplo] ===== */
+const FORMAS = [
+  {
+    id:"intro", tab:"Introdução", tc:"var(--m1)",
+    prompt:'Candidato, <b>abra</b> para mim o instituto: <b>Recuperação Judicial</b>. Dê-me a introdução.',
+    albl:"Introdução montada — as 4 peças no lugar",
+    pecas:[
+      ["①","Nome","nomeia o instituto",'"O/A [instituto],"',"A recuperação judicial,"],
+      ["②","Sede","o dispositivo que rege",'"disciplinada por… / nos termos do art. X"',"disciplinada pela Lei n. 11.101/2005,"],
+      ["③","Função + finalidade","o que é e para que serve",'"é o instituto que… a fim de…"',"é o instituto que viabiliza a superação da crise econômico-financeira do devedor empresário, a fim de manter a fonte produtora, o emprego e os interesses dos credores."],
+      ["④","Princípio","o núcleo axiológico",'"seu núcleo axiológico é o princípio da…"',"Seu núcleo axiológico, extraído do art. 47, é o princípio da preservação da empresa e de sua função social."]
+    ]
+  },
+  {
+    id:"quesito", tab:"Quesito", tc:"var(--m3)",
+    prompt:'Candidato, <b>desenvolva</b> o quesito: os <b>créditos submetidos</b> à recuperação judicial.',
+    albl:"Quesito montado — as 4 peças no lugar",
+    pecas:[
+      ["①","Âncora","repete a palavra do bullet",'"Quanto a… / No tocante a… / …, por sua vez,"',"Quanto aos créditos,"],
+      ["②","Regra","traz o artigo/dispositivo",'"nos termos do art. X / (art. X)"',"submetem-se todos os existentes na data do pedido (art. 49)."],
+      ["③","Reforço","jurisprudência ou distinção",'"O STJ, no Tema X, firmou que… / ao revés / porquanto"',"O STJ, no Tema Repetitivo 1.051, firmou que o momento de aferição é a data do fato gerador, e não a do trânsito em julgado."],
+      ["④","Fecho","a consequência / resposta direta",'"Por isso… / de modo que… / o critério, pois, é…"',"Por isso, mesmo os créditos ilíquidos e inexigíveis se submetem quando o fato é anterior ao pedido, em homenagem ao tratamento paritário."]
+    ]
+  },
+  {
+    id:"conclusao", tab:"Conclusão", tc:"var(--m4)",
+    prompt:'Candidato, <b>conclua</b> a redação sobre a recuperação judicial — sem trazer tema novo.',
+    albl:"Conclusão montada — as 4 peças no lugar",
+    pecas:[
+      ["①","Retomada","reabre o instituto",'"Conclui-se, pois, que [instituto],"',"Conclui-se, pois, que a recuperação judicial,"],
+      ["②","Eco do princípio","repete o princípio da introdução",'"informado(a) pela [princípio],"',"informada pela preservação da empresa,"],
+      ["③","Síntese","harmoniza os polos em tensão",'"harmoniza … com …,"',"harmoniza a continuidade da atividade produtiva com a satisfação dos credores,"],
+      ["④","Arremate","fecha sem tema novo",'"observados os limites legais e a orientação dos tribunais."',"observados os limites legais e a orientação consolidada dos tribunais superiores."]
+    ]
+  }
+];
+const SEGC=["seg1","seg2","seg3","seg4"];
+const SYMB=["①","②","③","④"];
+
+/* ----- cadeia de fôrmas (visual da redação inteira) ----- */
+const CHAIN=[
+  {t:"Introdução",c:"var(--m1)",n:"fôrma A"},
+  {t:"Quesito 1",c:"var(--m3)",n:"fôrma B"},
+  {t:"Quesito 2",c:"var(--m3)",n:"fôrma B"},
+  {t:"Quesito 3",c:"var(--m3)",n:"fôrma B"},
+  {t:"…",c:"var(--muted)",n:"⋯"},
+  {t:"Quesito 8",c:"var(--m3)",n:"fôrma B"},
+  {t:"Conclusão",c:"var(--m4)",n:"fôrma C"}
+];
+document.getElementById("chain").innerHTML=CHAIN.map((b,i)=>
+  `<div class="clink"><div class="cchip" style="--cc:${b.c}"><span class="ct">${b.n}</span><span class="cn">${b.t}</span></div>`+
+  (i<CHAIN.length-1?'<span class="carr">→</span>':'')+`</div>`).join("");
+
+/* ----- demo ----- */
+const tabsEl=document.getElementById("tabs");
+const steps=document.getElementById("steps");
+const promptTxt=document.getElementById("promptTxt");
+const assembled=document.getElementById("assembled");
+const assembledText=document.getElementById("assembledText");
+const albl=document.getElementById("albl");
+let cur=0;
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+tabsEl.innerHTML=FORMAS.map((f,i)=>
+  `<button class="tab" data-i="${i}" style="--tc:${f.tc}"><span class="tn">${["A","B","C"][i]}</span>${f.tab}</button>`).join("");
+
+function build(i){
+  cur=i; const f=FORMAS[i];
+  [...tabsEl.children].forEach((t,k)=>t.classList.toggle("active",k===i));
+  promptTxt.innerHTML=f.prompt;
+  albl.textContent=f.albl;
+  steps.innerHTML=f.pecas.map((p,k)=>`
+    <div class="mstep" style="--mc:var(--m${k+1})">
+      <button class="mhead" aria-expanded="false">
+        <span class="mn">${SYMB[k]}</span>
+        <span class="mrow2"><span class="mlab">${esc(p[1])}</span><span class="msub">${esc(p[2])}</span></span>
+        <span class="mtoggle">Revelar</span>
+      </button>
+      <div class="mbody"><i><div class="mtext">${esc(p[4])}<span class="gatilho"><b>gatilho:</b> ${esc(p[3])}</span></div></i></div>
+    </div>`).join("");
+  steps.querySelectorAll(".mstep").forEach(st=>{
+    st.querySelector(".mhead").addEventListener("click",()=>{
+      const open=st.classList.toggle("open");
+      st.querySelector(".mhead").setAttribute("aria-expanded",open?"true":"false");
+      st.querySelector(".mtoggle").textContent=open?"Revelado":"Revelar";
+      syncAssembled();
+    });
+  });
+  assembled.classList.add("hidden"); assembledText.innerHTML="";
+}
+function syncAssembled(){
+  const f=FORMAS[cur];
+  const all=[...steps.querySelectorAll(".mstep")];
+  if(all.length && all.every(s=>s.classList.contains("open"))){
+    assembledText.innerHTML=f.pecas.map((p,k)=>`<span class="${SEGC[k]}">${esc(p[4])}</span>`).join(" ");
+    assembled.classList.remove("hidden");
+  }else assembled.classList.add("hidden");
+}
+document.getElementById("revealAll").addEventListener("click",()=>{
+  steps.querySelectorAll(".mstep").forEach(st=>{
+    st.classList.add("open");
+    st.querySelector(".mhead").setAttribute("aria-expanded","true");
+    st.querySelector(".mtoggle").textContent="Revelado";
+  });
+  syncAssembled();
+});
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  steps.querySelectorAll(".mstep").forEach(st=>{
+    st.classList.remove("open");
+    st.querySelector(".mhead").setAttribute("aria-expanded","false");
+    st.querySelector(".mtoggle").textContent="Revelar";
+  });
+  syncAssembled();
+});
+tabsEl.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>build(+t.dataset.i)));
+build(0);
+</script>
+</body>
+</html>
